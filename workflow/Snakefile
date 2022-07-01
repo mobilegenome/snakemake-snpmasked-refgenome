@@ -36,16 +36,31 @@ rule all:
 rule rename_fasta_header:
     input: config.get("genome"),
     output:
-        fasta=temp("output/{strain}_fixed_headers/genome.fa"),
-        dir=directory("output/{strain}_fixed_headers/")
+        fasta=temp("output/mm10_fixed_headers/genome.fa"),
+        dir=directory("output/mm10_fixed_headers/")
     params:
         sed_expr="s/>.* />/g"
     message: "edit fasta headers"
     log:
-        "logs/edit_fasta_header_{strain}.log"
+        "logs/edit_fasta_header.log"
     shell:
         "echo 'running sed {params.sed_expr} to rename fasta header' > {log}; "
         "sed '{params.sed_expr}' {input} > {output.fasta}"
+
+
+rule rename_gtf_names:
+    input: config.get("annotation"),
+    output:
+        gtf=temp("output/mm10_fixed_headers/genes.gtf"),
+        dir=directory("output/mm10_fixed_headers/")
+    params:
+        sed_expr="s/>.* />/g"
+    message: "edit fasta headers"
+    log:
+        "logs/edit_gtf_names.log"
+    shell:
+        "echo 'running sed {params.sed_expr} to rename fasta header' > {log}; "
+        "sed '{params.sed_expr}' {input} > {output.gtf}"
 
 checkpoint snp_split:
     input:
@@ -91,7 +106,7 @@ rule snp_split_concat:
 rule cellranger_rna_mkref:
     input:
         fasta=rules.snp_split_concat.output,
-        annotation=config.get("annotation"),
+        annotation=rules.rename_gtf_names.output.gtf,
     output:
         directory("output/GRCm38_masked_{strain}"),
     wildcard_constraints:
