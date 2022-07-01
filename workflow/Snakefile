@@ -51,7 +51,7 @@ rule rename_fasta_header:
 rule rename_gtf_names:
     input: config.get("annotation"),
     output:
-        gtf=temp("output/mm10_fixed_headers/genes.gtf"),
+        gtf=temp("output/mm10_fixed_headers.gtf"),
     params:
         sed_expr="s/>.* />/g"
     message: "edit fasta headers"
