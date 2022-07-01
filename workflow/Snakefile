@@ -41,7 +41,7 @@ rule rename_fasta_header:
         "logs/edit_fasta_header_{strain}.log"
     shell:
         "echo 'running sed {params.sed_expr} to rename fasta header' > {log}"
-        "sed '{params.sed_expr}' {input} > {output} && echo 'successful' > {log}"
+        "sed '{params.sed_expr}' {input} > {output}"
 
 checkpoint snp_split:
     input:
