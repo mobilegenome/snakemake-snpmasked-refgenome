@@ -123,5 +123,5 @@ rule cellranger_rna_mkref:
         "{params.cellranger_mkref_bin} "
         "--genome={params.genome} "
         "--fasta=../{input.fasta[0]} "
-        "--genes={input.annotation} "
+        "--genes=../{input.annotation} "
         "--memgb={params.mem} > {log}"
