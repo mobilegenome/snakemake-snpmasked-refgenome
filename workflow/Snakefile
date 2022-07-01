@@ -31,11 +31,22 @@ rule all:
 #    run:
 # 	print("File is there {output}")
 
+rule rename_fasta_header:
+    input: os.path.dirname(config.get("genome")),
+    output: temp("output/{strain}.fixed_headers.fa"),
+    params:
+        sed_expr: "s/>.* />/g"
+    message: "edit fasta headers"
+    log:
+        "logs/edit_fasta_header_{strain}.log"
+    shell:
+        "echo 'running sed {params.sed_expr} to rename fasta header' > {log}"
+        "sed '{params.sed_expr}' {input} > {output} && echo 'successful' > {log}"
 
 checkpoint snp_split:
     input:
         vcf_file="data/mgp.v5.merged.snps_all.dbSNP142.vcf.gz",
-        ref_genome=os.path.dirname(config.get("genome")),
+        ref_genome=rules.rename_fasta_header.output,
     output:
         dir_snp=temp(directory("output/SNPs_{strain}/")),
         dir_fa=directory("output/{strain}_N-masked/"),
