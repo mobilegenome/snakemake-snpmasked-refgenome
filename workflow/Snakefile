@@ -32,7 +32,7 @@ rule all:
 # 	print("File is there {output}")
 
 rule rename_fasta_header:
-    input: os.path.dirname(config.get("genome")),
+    input: config.get("genome"),
     output: temp("output/{strain}.fixed_headers.fa"),
     params:
         sed_expr="s/>.* />/g"
