@@ -48,7 +48,7 @@ rule rename_fasta_header:
 checkpoint snp_split:
     input:
         vcf_file="data/mgp.v5.merged.snps_all.dbSNP142.vcf.gz",
-        ref_genome=os.path.dirname(rules.rename_fasta_header.output),
+        ref_genome=os.path.dirname(rules.rename_fasta_header.output[0]),
     output:
         dir_snp=temp(directory("output/SNPs_{strain}/")),
         dir_fa=directory("output/{strain}_N-masked/"),
@@ -64,7 +64,7 @@ checkpoint snp_split:
         strain=lambda wildcards: wildcards.strain,
     shell:
         "cd output; mkdir -p logs && "
-        "SNPsplit_genome_preparation --vcf_file ../{input.vcf_file} --strain {params.strain} --reference_genome {input.ref_genome} > {log}"
+        "SNPsplit_genome_preparation --vcf_file ../{input.vcf_file} --strain {params.strain} --reference_genome ../{input.ref_genome} > {log}"
 
 
 rule snp_split_concat:
