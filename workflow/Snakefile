@@ -35,7 +35,9 @@ rule all:
 
 rule rename_fasta_header:
     input: config.get("genome"),
-    output: temp("output/{strain}_fixed_headers/genome.fa"),
+    output:
+        fasta=temp("output/{strain}_fixed_headers/genome.fa"),
+        dir=directory("output/{strain}_fixed_headers/")
     params:
         sed_expr="s/>.* />/g"
     message: "edit fasta headers"
@@ -48,7 +50,7 @@ rule rename_fasta_header:
 checkpoint snp_split:
     input:
         vcf_file="data/mgp.v5.merged.snps_all.dbSNP142.vcf.gz",
-        ref_genome=os.path.dirname(rules.rename_fasta_header.output[0]),
+        ref_genome=rules.rename_fasta_header.output.dir,
     output:
         dir_snp=temp(directory("output/SNPs_{strain}/")),
         dir_fa=directory("output/{strain}_N-masked/"),
