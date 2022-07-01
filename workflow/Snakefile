@@ -19,7 +19,8 @@ print(all_files)
 localrules:
     all,
     snp_split_concat,
-    rename_fasta_header
+    rename_fasta_header,
+    rename_gtf_names
 
 
 rule all:
