@@ -35,7 +35,7 @@ rule rename_fasta_header:
     input: os.path.dirname(config.get("genome")),
     output: temp("output/{strain}.fixed_headers.fa"),
     params:
-        sed_expr: "s/>.* />/g"
+        sed_expr="s/>.* />/g"
     message: "edit fasta headers"
     log:
         "logs/edit_fasta_header_{strain}.log"
