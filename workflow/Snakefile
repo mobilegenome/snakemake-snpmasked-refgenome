@@ -92,9 +92,9 @@ checkpoint snp_split:
 
 rule snp_split_create_sorted_bed:
     input:
-        checkpoints.snp_split.output.archive
+        lambda wildcards: checkpoints.snp_split.get(**wildcards).output.archive
     output:
-        bed=archive="output/all_SNPs_{strain}_GRCm38.bed.gz",
+        bed="output/all_SNPs_{strain}_GRCm38.bed.gz"
     log:
         logs="logs/create_bed_{strain}.log"
     shell:
