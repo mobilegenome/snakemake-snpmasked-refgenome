@@ -8,9 +8,16 @@ HTTP = HTTPRemoteProvider()
 
 print(config)
 
+STRAINS = config.get("strains")
+
 all_files = [
     "output/GRCm38_masked_{strain}".format(strain=strain)
     for strain in config.get("strains")
+] + [
+    "all_SNPs_{strain}_GRCm38.bed.gz".format(strain=strain)
+    for strain in config.get("strains")
+] + [
+    "output/all_SNPs_all_strains_GRCm38.bed.gz"
 ]
 
 print(all_files)
@@ -83,6 +90,26 @@ checkpoint snp_split:
         "cd output; mkdir -p logs && "
         "SNPsplit_genome_preparation --vcf_file ../{input.vcf_file} --strain {params.strain} --reference_genome ../{input.ref_genome} > {log}"
 
+rule snp_split_create_sorted_bed:
+    input:
+        checkpoints.snp_split.output.archive
+    output:
+        bed=archive="output/all_SNPs_{strain}_GRCm38.bed.gz",
+    log:
+        logs="logs/create_bed_{strain}.log"
+    shell:
+        "zcat {input} | sort -V -k2,2 -k3,3 | awk 'OFS=\"\t\" {{print $2, $3, $3+1, $5}}' | gzip -c > {output.bed} 2> {log}"
+
+
+rule merge_bed_files:
+    input:
+        expand("output/all_SNPs_{strain}_GRCm38.bed.gz", strain=STRAINS)
+    output:
+        bed="output/all_SNPs_all_strains_GRCm38.bed.gz",
+    envmodules:
+        "bedtools/2.24.0"
+    shell:
+        "zcat {input} | bedtools sort -i - | bedtools merge -i - | gzip -c > {output.bed}"
 
 rule snp_split_concat:
     input:
