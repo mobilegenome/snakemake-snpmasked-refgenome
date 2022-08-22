@@ -14,7 +14,7 @@ all_files = [
     "output/GRCm38_masked_{strain}".format(strain=strain)
     for strain in config.get("strains")
 ] + [
-    "all_SNPs_{strain}_GRCm38.bed.gz".format(strain=strain)
+    "output/all_SNPs_{strain}_GRCm38.bed.gz".format(strain=strain)
     for strain in config.get("strains")
 ] + [
     "output/all_SNPs_all_strains_GRCm38.bed.gz"
