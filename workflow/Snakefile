@@ -103,13 +103,25 @@ rule snp_split_create_sorted_bed:
 
 rule merge_bed_files:
     input:
-        expand("output/all_SNPs_{strain}_GRCm38.bed.gz", strain=STRAINS)
+        expand("output/all_SNPs_{strain}_GRCm38.bed.gz", strain=STRAINS) +
+            ["/omics/groups/OE0538/internal/users/f844s/2022-bonemarrow/data/Caroli.snp.mm10.no_indels.no_chr.bed.gz"]
     output:
         bed="output/all_SNPs_all_strains_GRCm38.bed.gz",
     envmodules:
         "bedtools/2.24.0"
     shell:
         "zcat {input} | bedtools sort -i - | bedtools merge -i - | gzip -c > {output.bed}"
+
+rule maskfasta:
+    input:
+        bed="output/all_SNPs_all_strains_GRCm38.bed.gz",
+        fasta=config["genome"]
+    output:
+        fasta="output/GRCm38_masked_allStrains.fa"
+    envmodules:
+        "bedtools/2.24.0"
+    shell:
+        "bedtools maskfasta -bed {input.bed} -fi {input.fasta} -fo {output.fasta}"
 
 rule snp_split_concat:
     input:
@@ -129,6 +141,28 @@ rule snp_split_concat:
         print("{input}")
         shell("cat {input} > {output}")
 
+
+rule cellranger_rna_mkref_merged:
+    input:
+        fasta=rules.maskfasta.output.fasta,
+        annotation=rules.rename_gtf_names.output.gtf,
+    output:
+        directory("output/GRCm38_masked_allStrains"),
+
+    params:
+        mem=300,
+        output_root_dir=lambda wildcards, output: os.path.split(output[0])[0],
+        cellranger_mkref_bin=config["executables"]["cellranger-rna"],
+        genome="GRCm38_masked_allStrains",
+    log:
+        "cellranger_rna_mkref_GRCm38_masked_allStrains.log",
+    shell:
+        "cd output && "
+        "{params.cellranger_mkref_bin} "
+        "--genome={params.genome} "
+        "--fasta=../{input.fasta[0]} "
+        "--genes=../{input.annotation} "
+        "--memgb={params.mem} > {log}"
 
 rule cellranger_rna_mkref:
     input:
