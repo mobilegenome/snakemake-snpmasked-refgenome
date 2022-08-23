@@ -160,7 +160,7 @@ rule cellranger_rna_mkref_merged:
         "cd output && "
         "{params.cellranger_mkref_bin} "
         "--genome={params.genome} "
-        "--fasta=../{input.fasta[0]} "
+        "--fasta=../{input.fasta} "
         "--genes=../{input.annotation} "
         "--memgb={params.mem} > {log}"
 
