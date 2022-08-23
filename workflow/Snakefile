@@ -8,17 +8,19 @@ HTTP = HTTPRemoteProvider()
 
 print(config)
 
-STRAINS = config.get("strains")
+STRAINS = config["strains"]
+PER_STRAIN_FASTA = config["per_strain_fasta"]
 
 all_files = [
-    "output/GRCm38_masked_{strain}".format(strain=strain)
-    for strain in config.get("strains")
-] + [
     "output/all_SNPs_{strain}_GRCm38.bed.gz".format(strain=strain)
     for strain in config.get("strains")
 ] + [
-    "output/all_SNPs_all_strains_GRCm38.bed.gz"
+    "output/all_SNPs_all_strains_GRCm38.bed.gz",
+    "output/GRCm38_masked_all_strains"
 ]
+if PER_STRAIN_FASTA:
+    all_files.extend(["output/GRCm38_masked_{strain}".format(strain=strain)
+                         for strain in config.get("strains")])
 
 print(all_files)
 
@@ -41,149 +43,6 @@ rule all:
 #    run:
 # 	print("File is there {output}")
 
-rule rename_fasta_header:
-    input: config.get("genome"),
-    output:
-        fasta=temp("output/mm10_fixed_headers/genome.fa"),
-        dir=directory("output/mm10_fixed_headers/")
-    params:
-        sed_expr="s/>.* />/g"
-    message: "edit fasta headers"
-    log:
-        "logs/edit_fasta_header.log"
-    shell:
-        "echo 'running sed {params.sed_expr} to rename fasta header' > {log}; "
-        "sed '{params.sed_expr}' {input} > {output.fasta}"
-
-
-rule rename_gtf_names:
-    input: config.get("annotation"),
-    output:
-        gtf=temp("output/mm10_fixed_headers.gtf"),
-    params:
-        sed_expr="s/^chr//g"
-    message: "edit GTF headers"
-    log:
-        "logs/edit_gtf_names.log"
-    shell:
-        "echo 'running sed {params.sed_expr} to rename GTF header' > {log}; "
-        "sed '{params.sed_expr}' {input} > {output.gtf}"
-
-checkpoint snp_split:
-    input:
-        vcf_file="data/mgp.v5.merged.snps_all.dbSNP142.vcf.gz",
-        ref_genome=rules.rename_fasta_header.output.dir,
-    output:
-        dir_snp=temp(directory("output/SNPs_{strain}/")),
-        dir_fa=directory("output/{strain}_N-masked/"),
-        report="output/{strain}_SNP_filtering_report.txt",
-        archive="output/all_SNPs_{strain}_GRCm38.txt.gz",
-    message:
-        "snpsplit prepare"
-    conda:
-        "envs/snpsplit.yml"
-    log:
-        "logs/snp_split_{strain}.log",
-    params:
-        strain=lambda wildcards: wildcards.strain,
-    shell:
-        "cd output; mkdir -p logs && "
-        "SNPsplit_genome_preparation --vcf_file ../{input.vcf_file} --strain {params.strain} --reference_genome ../{input.ref_genome} > {log}"
-
-rule snp_split_create_sorted_bed:
-    input:
-        lambda wildcards: checkpoints.snp_split.get(**wildcards).output.archive
-    output:
-        bed="output/all_SNPs_{strain}_GRCm38.bed.gz"
-    log:
-        logs="logs/create_bed_{strain}.log"
-    shell:
-        "zcat {input} | sort -V -k2,2 -k3,3 | awk 'OFS=\"\t\" {{print $2, $3, $3+1, $5}}' | gzip -c > {output.bed} 2> {log}"
-
-
-rule merge_bed_files:
-    input:
-        expand("output/all_SNPs_{strain}_GRCm38.bed.gz", strain=STRAINS) +
-            ["/omics/groups/OE0538/internal/users/f844s/2022-bonemarrow/data/Caroli.snp.mm10.no_indels.no_chr.bed.gz"]
-    output:
-        bed="output/all_SNPs_all_strains_GRCm38.bed.gz",
-    envmodules:
-        "bedtools/2.24.0"
-    shell:
-        "zcat {input} | sed 's#/#\t#g' | bedtools sort -i - | bedtools merge -i - -c 4,5 -o collapse | sed 's/^/chr/g' | "
-        " gzip -c > {output.bed}"
-
-rule maskfasta:
-    input:
-        bed="output/all_SNPs_all_strains_GRCm38.bed.gz",
-        fasta=config["genome"]
-    output:
-        fasta="output/GRCm38_masked_allStrains.fa"
-    envmodules:
-        "bedtools/2.24.0"
-    shell:
-        "bedtools maskfasta -bed {input.bed} -fi {input.fasta} -fo {output.fasta}"
-
-rule snp_split_concat:
-    input:
-        lambda wildcards: sorted(
-            glob.glob(
-                "{directory}/{filename_pattern}".format(
-                    directory=checkpoints.snp_split.get(**wildcards).output.dir_fa,
-                    filename_pattern="*.fa",
-                )
-            )
-        ),
-    wildcard_constraints:
-        strain="|".join(config.get("strains")),
-    output:
-        "output/GRCm38_masked_{strain}.fa",
-    run:
-        print("{input}")
-        shell("cat {input} > {output}")
-
-
-rule cellranger_rna_mkref_merged:
-    input:
-        fasta=rules.maskfasta.output.fasta,
-        annotation=rules.rename_gtf_names.output.gtf,
-    output:
-        directory("output/GRCm38_masked_allStrains"),
-
-    params:
-        mem=300,
-        output_root_dir=lambda wildcards, output: os.path.split(output[0])[0],
-        cellranger_mkref_bin=config["executables"]["cellranger-rna"],
-        genome="GRCm38_masked_allStrains",
-    log:
-        "cellranger_rna_mkref_GRCm38_masked_allStrains.log",
-    shell:
-        "cd output && "
-        "{params.cellranger_mkref_bin} "
-        "--genome={params.genome} "
-        "--fasta=../{input.fasta} "
-        "--genes=../{input.annotation} "
-        "--memgb={params.mem} > {log}"
-
-rule cellranger_rna_mkref:
-    input:
-        fasta=rules.snp_split_concat.output,
-        annotation=rules.rename_gtf_names.output.gtf,
-    output:
-        directory("output/GRCm38_masked_{strain}"),
-    wildcard_constraints:
-        strain="|".join(config.get("strains")),
-    params:
-        mem=300,
-        output_root_dir=lambda wildcards, output: os.path.split(output[0])[0],
-        cellranger_mkref_bin=config["executables"]["cellranger-rna"],
-        genome=lambda wildcards, input: f"GRCm38_masked_{wildcards.strain}",
-    log:
-        "cellranger_rna_mkref_GRCm38_masked_{strain}.log",
-    shell:
-        "cd output && "
-        "{params.cellranger_mkref_bin} "
-        "--genome={params.genome} "
-        "--fasta=../{input.fasta[0]} "
-        "--genes=../{input.annotation} "
-        "--memgb={params.mem} > {log}"
+include: "rules/prepare.smk"
+include: "rules/maskfasta.smk"
+include: "rules/cellranger_mkref.smk"

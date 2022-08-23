@@ -5,3 +5,6 @@ annotation: "/omics/groups/OE0538/internal/users/f844s/cellranger-ref/mm10/refda
 strains:
   - SPRET_EiJ
   - CAST_EiJ
+additional_variant_bed_files:
+  Mus_caroli: "/omics/groups/OE0538/internal/users/f844s/2022-bonemarrow/data/Caroli.snp.mm10.no_indels.no_chr.bed.gz"
+per_strain_fasta: False
