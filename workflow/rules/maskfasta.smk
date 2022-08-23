@@ -18,7 +18,7 @@ checkpoint extract_snv_with_snp_split:
     message:
         "snpsplit prepare"
     conda:
-        "envs/snpsplit.yml"
+        "../envs/snpsplit.yml"
     log:
         "logs/snp_split_{strain}.log",
     params:
