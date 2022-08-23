@@ -110,7 +110,8 @@ rule merge_bed_files:
     envmodules:
         "bedtools/2.24.0"
     shell:
-        "zcat {input} | sed 's#/#\t#g' | bedtools sort -i - | bedtools merge -i - -c 4,5 -o collapse | gzip -c > {output.bed}"
+        "zcat {input} | sed 's#/#\t#g' | bedtools sort -i - | bedtools merge -i - -c 4,5 -o collapse | sed 's/^/chr/g' | "
+        " gzip -c > {output.bed}"
 
 rule maskfasta:
     input:
