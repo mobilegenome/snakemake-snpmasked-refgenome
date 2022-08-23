@@ -18,7 +18,7 @@ rule cellranger_rna_mkref_merged:
         "{params.cellranger_mkref_bin} "
         "--genome={params.genome} "
         "--fasta=../{input.fasta} "
-        "--genes=../{input.annotation} "
+        "--genes={input.annotation} "
         "--memgb={params.mem} > {log}"
 
 if PER_STRAIN_FASTA:
