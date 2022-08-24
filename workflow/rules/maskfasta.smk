@@ -38,7 +38,7 @@ rule snp_split_create_sorted_bed:
     log:
         logs="logs/create_bed_{strain}.log"
     shell:
-        "zcat {input} | sort -V -k2,2 -k3,3 | awk 'OFS=\"\t\" {{print $2, $3, $3+1, $5}}' | gzip -c > {output.bed} 2> {log}"
+        "zcat {input} | sort -V -k2,2 -k3,3 | awk 'OFS=\"\t\" {{print $2, $3-1, $3, $5}}' | gzip -c > {output.bed} 2> {log}"
 
 
 def add_additional_variants(*labels):
