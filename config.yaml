@@ -8,4 +8,4 @@ strains:
 additional_variant_bed_files:
   Mus_caroli: "/omics/groups/OE0538/internal/users/f844s/2022-bonemarrow/data/Caroli.snp.mm10.no_indels.no_chr.bed.gz"
 per_strain_fasta: False
-output_directory: "../2022-bonemarrow/data/masked_referencemasked_reference/"
+output_directory: "../2022-bonemarrow/data/masked_reference"
