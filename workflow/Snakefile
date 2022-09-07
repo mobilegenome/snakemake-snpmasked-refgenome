@@ -8,7 +8,7 @@ from pathlib import Path
 # get config variables
 STRAINS = config["strains"]
 PER_STRAIN_FASTA = config["per_strain_fasta"]
-OUTPUT_DIR="output"
+OUTPUT_DIR=config["output_directory"]
 
 def get_target_files():
     target_files = dict(
