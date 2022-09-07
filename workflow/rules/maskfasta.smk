@@ -11,10 +11,10 @@ checkpoint extract_snv_with_snp_split:
         vcf_file="data/mgp.v5.merged.snps_all.dbSNP142.vcf.gz",
         ref_genome=rules.strip_chr_prefix_from_fasta.output.dir,
     output:
-        dir_snp=temp(directory("output/SNPs_{strain}/")),
-        dir_fa=directory("output/{strain}_N-masked/"),
-        report="output/{strain}_SNP_filtering_report.txt",
-        archive="output/all_SNPs_{strain}_GRCm38.txt.gz",
+        dir_snp=temp(directory(f"{OUTPUT_DIR}/SNPs_{{strain}}/")),
+        dir_fa=directory(f"{OUTPUT_DIR}/{{strain}}_N-masked/"),
+        report=f"{OUTPUT_DIR}/{{strain}}_SNP_filtering_report.txt",
+        archive=f"{OUTPUT_DIR}/all_SNPs_{{strain}}_GRCm38.txt.gz",
     message:
         "snpsplit prepare"
     conda:
@@ -34,7 +34,7 @@ rule snp_split_create_sorted_bed:
     input:
         lambda wildcards: checkpoints.extract_snv_with_snp_split.get(**wildcards).output.archive
     output:
-        bed="output/all_SNPs_{strain}_GRCm38.bed.gz"
+        bed=f"{OUTPUT_DIR}/all_SNPs_{{strain}}_GRCm38.bed.gz"
     log:
         logs="logs/create_bed_{strain}.log"
     shell:
@@ -54,10 +54,10 @@ def add_additional_variants(*labels):
 rule merge_bed_files:
     """Merge multipe BED files"""
     input:
-        expand("output/all_SNPs_{strain}_GRCm38.bed.gz", strain=STRAINS) +
+        expand(f"{OUTPUT_DIR}/all_SNPs_{{strain}}_GRCm38.bed.gz", strain=STRAINS) +
         add_additional_variants("Mus_caroli")
     output:
-        bed="output/all_SNPs_all_strains_GRCm38.bed.gz",
+        bed=f"{OUTPUT_DIR}/all_SNPs_all_strains_GRCm38.bed.gz",
     params:
         add_chr="| sed 's/^/chr/g' | "
     resources:
@@ -75,10 +75,10 @@ rule merge_bed_files:
 rule maskfasta:
     """Mask coordinates from BED file in FASTA"""
     input:
-        bed="output/all_SNPs_all_strains_GRCm38.bed.gz",
+        bed=f"{OUTPUT_DIR}/all_SNPs_all_strains_GRCm38.bed.gz",
         fasta=config["genome"]
     output:
-        fasta="output/GRCm38_masked_allStrains.fa"
+        fasta=f"{OUTPUT_DIR}/GRCm38_masked_allStrains.fa"
     resources:
         mem_mb=64000
     envmodules:
@@ -103,7 +103,7 @@ if PER_STRAIN_FASTA:
         wildcard_constraints:
             strain="|".join(config.get("strains")),
         output:
-            "output/GRCm38_masked_{strain}.fa",
+            f"{OUTPUT_DIR}/GRCm38_masked_{{strain}}.fa",
         run:
             print("{input}")
             shell("cat {input} > {output}")

@@ -2,25 +2,39 @@ import glob
 import os
 from snakemake.remote.FTP import RemoteProvider as FTPRemoteProvider
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
+from pathlib import Path
 
-FTP = FTPRemoteProvider(username="anonymous", password="mypassword")
-HTTP = HTTPRemoteProvider()
 
-print(config)
-
+# get config variables
 STRAINS = config["strains"]
 PER_STRAIN_FASTA = config["per_strain_fasta"]
+OUTPUT_DIR="output"
 
-all_files = [
-    "output/all_SNPs_{strain}_GRCm38.bed.gz".format(strain=strain)
-    for strain in config.get("strains")
-] + [
-    "output/all_SNPs_all_strains_GRCm38.bed.gz",
-    "output/GRCm38_masked_all_strains"
-]
-if PER_STRAIN_FASTA:
-    all_files.extend(["output/GRCm38_masked_{strain}".format(strain=strain)
-                         for strain in config.get("strains")])
+def get_target_files():
+    target_files = dict(
+    snp_split_targets =[
+        "{outdir}/all_SNPs_{strain}_GRCm38.bed.gz".format(
+            outdir=OUTPUT_DIR,
+            strain=strain)
+        for strain in STRAINS
+    ],
+    merged_strain_targets = [
+        "output/all_SNPs_all_strains_GRCm38.bed.gz",
+        "output/GRCm38_masked_all_strains"
+    ]
+    )
+
+    if PER_STRAIN_FASTA:
+        target_files["single_strain_targets"] = \
+                ["{outdir}/GRCm38_masked_{strain}".format(
+                    outdir=OUTPUT_DIR,
+                    strain=strain)
+                    for strain in STRAINS]
+
+    return target_files.values()
+
+all_files = get_target_files()
+
 
 print(all_files)
 
