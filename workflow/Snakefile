@@ -10,24 +10,24 @@ STRAINS = config["strains"]
 PER_STRAIN_FASTA = config["per_strain_fasta"]
 OUTPUT_DIR=config["output_directory"]
 
-def get_target_files():
+def get_target_files(output_dir):
     target_files = dict(
     snp_split_targets =[
         "{outdir}/all_SNPs_{strain}_GRCm38.bed.gz".format(
-            outdir=OUTPUT_DIR,
+            outdir=output_dir,
             strain=strain)
         for strain in STRAINS
     ],
     merged_strain_targets = [
-        "output/all_SNPs_all_strains_GRCm38.bed.gz",
-        "output/GRCm38_masked_all_strains"
+        f"{output_dir}/all_SNPs_all_strains_GRCm38.bed.gz",
+        f"{output_dir}/GRCm38_masked_all_strains"
     ]
     )
 
     if PER_STRAIN_FASTA:
         target_files["single_strain_targets"] = \
                 ["{outdir}/GRCm38_masked_{strain}".format(
-                    outdir=OUTPUT_DIR,
+                    outdir=output_dir,
                     strain=strain)
                     for strain in STRAINS]
 
