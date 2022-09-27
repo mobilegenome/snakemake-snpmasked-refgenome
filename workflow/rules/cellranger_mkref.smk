@@ -1,3 +1,5 @@
+from pathlib import Path
+
 rule cellranger_rna_extract_version_suffix_from_annotation:
     input:
         annotation=config["annotation"]
@@ -16,19 +18,17 @@ rule cellranger_rna_filter_gtf:
         gtf=rules.cellranger_rna_extract_version_suffix_from_annotation.output
     output:
         f"{OUTPUT_DIR}/genes.filtered.gtf"
-
     log:
         "logs/cellranger_rna_filter_gtf.log",
 
     params:
-        software_base_path=config.get("software_base_path", ""),
         accepted_gene_types=" ".join(
             map(lambda val: f"--attribute=gene_type:{val}",
-                config.get("cellranger_accepted_gene_transcript_types"))
+                config["cellranger_accepted_gene_transcript_types"])
         ),
         accepted_transcript_types=" ".join(
             map(lambda val: f"--attribute=transcript_type:{val}",
-                config.get("cellranger_accepted_gene_transcript_types"))
+                config["cellranger_accepted_gene_transcript_types"])
         ),
     envmodules:
         "cellranger/6.1.1"
@@ -50,14 +50,14 @@ rule cellranger_rna_mkref_merged:
         directory(f"{OUTPUT_DIR}/GRCm38_masked_all_strains"),
     params:
         mem=300,
-        output_root_dir=lambda wildcards, output: os.path.split(output[0])[0],
+        output_root_dir=lambda wildcards, output: Path(output[0]).parent,
         genome="GRCm38_masked_allStrains",
     envmodules:
         "cellranger/6.1.1"
     log:
         "logs/cellranger_rna_mkref_GRCm38_masked_allStrains.log",
     shell:
-        "cd {output} && "
+        "cd {params.output_root_dir} && "
         "cellranger mkref "
         "--genome={params.genome} "
         "--fasta=../{input.fasta} "
