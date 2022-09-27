@@ -2,7 +2,7 @@ from pathlib import Path
 
 rule cellranger_rna_extract_version_suffix_from_annotation:
     input:
-        annotation=config["annotation"]
+        annotation=rules.strip_chr_prefix_from_gtf.output.gtf
     output:
         f"{OUTPUT_DIR}/genes.modified.gtf"
     log:
@@ -45,7 +45,7 @@ rule cellranger_rna_mkref_merged:
     """
     input:
         fasta=rules.maskfasta.output.fasta,
-        annotation=rules.cellranger_rna_extract_version_suffix_from_annotation.output
+        annotation=rules.cellranger_rna_filter_gtf.output
     output:
         directory(f"{OUTPUT_DIR}/GRCm38_masked_all_strains"),
     params:
