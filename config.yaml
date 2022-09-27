@@ -10,20 +10,20 @@ additional_variant_bed_files:
 per_strain_fasta: False
 output_directory: "../2022-bonemarrow/data/masked_reference"
 cellranger_accepted_gene_transcript_types:
-  - "protein_coding",
-    "lncRNA",
-    "antisense",
-    "IG_C_gene",
-    "IG_D_gene",
-    "IG_J_gene",
-    "IG_LV_gene",
-    "IG_V_gene",
-    "IG_V_pseudogene",
-    "IG_J_pseudogene",
-    "IG_C_pseudogene",
-    "TR_C_gene",
-    "TR_D_gene",
-    "TR_J_gene",
-    "TR_V_gene",
-    "TR_V_pseudogene",
-    "TR_J_pseudogene"
+  - "protein_coding" 
+  - "lncRNA" 
+  - "antisense" 
+  - "IG_C_gene" 
+  - "IG_D_gene" 
+  - "IG_J_gene" 
+  - "IG_LV_gene" 
+  - "IG_V_gene" 
+  - "IG_V_pseudogene" 
+  - "IG_J_pseudogene" 
+  - "IG_C_pseudogene" 
+  - "TR_C_gene" 
+  - "TR_D_gene" 
+  - "TR_J_gene" 
+  - "TR_V_gene" 
+  - "TR_V_pseudogene" 
+  - "TR_J_pseudogene"
