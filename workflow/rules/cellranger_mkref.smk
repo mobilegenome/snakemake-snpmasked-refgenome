@@ -71,7 +71,7 @@ rule cellranger_rna_mkref_merged:
         "cd {params.output_root_dir} && "
         "cellranger mkref "
         "--genome={params.genome} "
-        "--fasta={input.fasta} "
+        "--fasta=../../{input.fasta} "
         "--genes={input.annotation} "
         "--memgb={params.mem} > {log}"
 
