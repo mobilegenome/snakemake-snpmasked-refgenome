@@ -16,7 +16,7 @@ rule strip_chr_prefix_from_fasta:
 rule strip_chr_prefix_from_gtf:
     input: config.get("annotation"),
     output:
-        gtf=temp(f"{OUTPUT_DIR}/mm10_fixed_headers.gtf"),
+        gtf=temp(f"{OUTPUT_DIR}/mm10_fixed_headers.gtf")
     params:
         sed_expr="s/^chr//g"
     message: "edit GTF headers"
