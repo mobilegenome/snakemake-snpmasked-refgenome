@@ -30,6 +30,8 @@ checkpoint extract_snv_with_snp_split:
 rule snp_split_create_sorted_bed:
     """
     Convert extracted SNV from from SNPsplit to a gzipped BED file.
+    
+    
     """
     input:
         lambda wildcards: checkpoints.extract_snv_with_snp_split.get(**wildcards).output.archive
@@ -52,7 +54,10 @@ def add_additional_variants(*labels):
     return paths
 
 rule merge_bed_files:
-    """Merge multipe BED files"""
+    """Merge multipe BED files
+    
+    Add "chr" prefix
+    """
     input:
         expand(f"{OUTPUT_DIR}/all_SNPs_{{strain}}_GRCm38.bed.gz", strain=STRAINS) +
         add_additional_variants("Mus_caroli")

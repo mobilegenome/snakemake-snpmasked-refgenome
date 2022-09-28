@@ -27,6 +27,27 @@ The configuration in `workflow/config.yaml` contains:
 - path to `cellranger mkref`
 - list of Strains from the mouse genome project (MGP)
 
+### Sequence names
+
+There is no consensus whether to use `chr` prefixes for sequence/chromosome names in 
+FASTA and annotation files. 
+
+In the results, we aim to use `chr` prefixes matching the convention used by the cellranger 
+reference dataset. 
+
+This matrix gives an overview what to expect and requires modification:
+
+| Mod? | Dataset / File                    | prefix | example | contents                  |
+|----- |-----------------------------------|--------|---------|--------------------------|
+| Yes  | `mgp_REL2005_snps_indels.vcf.gz`  | None   | `1`     | 1-19,X missing: Y, MT |
+| Yes  | `Caroli.snp`                      | None   | `1`     | 1-19
+| No   | `Caroli.snp.bed`                  | `chr`  | `chr1`  | chr1-19,X,Y,M  + unlocalized | 
+| No   | cellranger reference 20202-A      | `chr`  | `chr1`  | chr1-19,X,Y,M  + unlocalized | 
+| No   | `gencode.vM25.annotation.gtf `    | `chr`  | `chr1`  | chr1-19,X,Y,M  |
+| No   | `mm9ToMm10.over.chain.gz`         | `chr`  | `chr1`  | chr1-19,X,Y,M  |
+
+
+
 ## Run
 
 The workflow can be run by executing:
