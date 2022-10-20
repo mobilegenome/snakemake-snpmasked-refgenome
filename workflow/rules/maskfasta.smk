@@ -51,7 +51,10 @@ def add_additional_variants(*labels):
             paths.append(add_bed_files[label])
         else:
             raise KeyError(f"Key {label} not found in config: {add_bed_files.keys()}")
-    return paths
+    if paths:
+        return paths
+    else:
+        raise ValueError
 
 rule merge_bed_files:
     """Merge multipe BED files
