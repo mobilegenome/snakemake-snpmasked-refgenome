@@ -1,3 +1,5 @@
+import os
+
 checkpoint extract_snv_with_snp_split:
     """
     Extract SNVs from the Mouse Genome Project (MGP) VCF file 
@@ -79,6 +81,37 @@ rule merge_bed_files:
         "bedtools merge -i - -c 4,5 -o collapse "
         "{params.add_chr} "
         " gzip -c > {output.bed}"
+
+rule create_genome_file:
+    input:
+        fasta=config["genome"]
+    output:
+        "chromosome_lengths.txt"
+    envmodules:
+        "samtools"
+    params:
+        input_filename=lambda wildcards, input: os.path.basename(input.fasta)
+    shell:
+        "cp {input.fasta} {params.input_filename} && "
+        "samtools faidx {params.input_filename} && "
+        "cut -f1,2 {params.input_filename} | > {output}"
+
+
+
+rule intersection:
+    input:
+        bed_files=expand(f"{OUTPUT_DIR}/all_SNPs_{{strain}}_GRCm38.bed.gz", strain=STRAINS) +
+        add_additional_variants("Mus_caroli"),
+        genome_file=rules.create_genome_file.output
+    output:
+        f"{OUTPUT_DIR}/all_SNPs_all_strains_GRCm38.intersect.bed.gz",
+    params:
+        names="CAST SPRET CAROLI"
+    envmodules:
+        "bedtools/2.24.0"
+    shell:
+        "bedtools multiinter -i {input.bed_files} -empty -g {input.genome_file} -names {params.names} | "
+        "gzip -c > {output}"
 
 rule maskfasta:
     """Mask coordinates from BED file in FASTA"""
