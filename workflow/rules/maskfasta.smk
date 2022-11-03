@@ -38,7 +38,7 @@ rule snp_split_create_sorted_bed:
     input:
         lambda wildcards: checkpoints.extract_snv_with_snp_split.get(**wildcards).output.archive
     output:
-        bed=f"{OUTPUT_DIR}/SNPsplit/{{strain}}//all_SNPs_{{strain}}_GRCm38.bed.gz"
+        bed=f"{OUTPUT_DIR}/SNPsplit/{{strain}}/all_SNPs_{{strain}}_GRCm38.bed.gz"
     log:
         logs="logs/create_bed_{strain}.log"
     shell:
