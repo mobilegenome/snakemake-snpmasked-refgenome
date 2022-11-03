@@ -14,7 +14,7 @@ rule strip_chr_prefix_from_fasta:
         "logs/edit_fasta_header.log"
     shell:
         "echo 'running sed {params.sed_expr} to rename fasta header' > {log}; "
-        "mkdir -p {output.dir} "
+        "mkdir -p {output.dir}; "
         "sed '{params.sed_expr}' {input} > {output.fasta}"
 
 rule add_chr_prefix_to_fasta:
@@ -29,7 +29,7 @@ rule add_chr_prefix_to_fasta:
         "logs/edit_fasta_header.log"
     shell:
         "echo 'running sed {params.sed_expr} to rename fasta header' > {log}; "
-        "mkdir -p {output.dir} "
+        "mkdir -p {output.dir}; "
         "sed -E '{params.sed_expr}' {input} > {output.fasta}"
 
 
@@ -44,7 +44,7 @@ rule strip_chr_prefix_from_gtf:
         "logs/edit_gtf_names.log"
     shell:
         "echo 'running sed {params.sed_expr} to rename GTF header' > {log}; "
-        "mkdir -p {output.dir} "
+        "mkdir -p {output.dir}; "
         "sed '{params.sed_expr}' {input} > {output.gtf}"
 
 rule create_genome_file:
