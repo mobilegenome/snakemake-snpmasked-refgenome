@@ -5,7 +5,7 @@ if config["cellranger_filter_gtf"]:
         input:
             annotation=config["annotation"]
         output:
-            f"{OUTPUT_DIR}/genes.modified.gtf"
+            f"{OUTPUT_DIR}/reference_assembly/genes.modified.gtf"
         log:
             "logs/cellranger_rna_extract_version_suffix_from_annotation.log",
         params:
@@ -19,7 +19,7 @@ if config["cellranger_filter_gtf"]:
         input:
             gtf=rules.cellranger_rna_extract_version_suffix_from_annotation.output
         output:
-            f"{OUTPUT_DIR}/genes.filtered.gtf"
+            f"{OUTPUT_DIR}/reference_assembly/genes.filtered.gtf"
         log:
             "logs/cellranger_rna_filter_gtf.log",
 
@@ -58,7 +58,7 @@ rule cellranger_rna_mkref_merged:
         fasta=rules.maskfasta.output.fasta,
         annotation=cellranger_mkref_get_gtf_input()
     output:
-        directory(f"{OUTPUT_DIR}/GRCm38_masked_all_strains"),
+        directory(f"{OUTPUT_DIR}/merged/GRCm38_masked_all_strains"),
     params:
         mem=300,
         output_root_dir=lambda wildcards, output: Path(output[0]).parent,
@@ -81,7 +81,7 @@ if PER_STRAIN_FASTA:
             fasta=rules.snp_split_concat.output,
             annotation=rules.strip_chr_prefix_from_gtf.output.gtf,
         output:
-            directory(f"{OUTPUT_DIR}/GRCm38_masked_{{strain}}"),
+            directory(f"{OUTPUT_DIR}/{{strain}}/GRCm38_masked_{{strain}}"),
         wildcard_constraints:
             strain="|".join(config.get("strains")),
         params:

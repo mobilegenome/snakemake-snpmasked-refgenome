@@ -13,10 +13,10 @@ checkpoint extract_snv_with_snp_split:
         vcf_file="data/mgp.v5.merged.snps_all.dbSNP142.vcf.gz",
         ref_genome=rules.strip_chr_prefix_from_fasta.output.dir,
     output:
-        dir_snp=temp(directory(f"{OUTPUT_DIR}/SNPs_{{strain}}/")),
-        dir_fa=directory(f"{OUTPUT_DIR}/{{strain}}_N-masked/"),
-        report=f"{OUTPUT_DIR}/{{strain}}_SNP_filtering_report.txt",
-        archive=f"{OUTPUT_DIR}/all_SNPs_{{strain}}_GRCm38.txt.gz",
+        dir_snp=temp(directory(f"{OUTPUT_DIR}/SNPsplit/{{strain}}/SNPs_{{strain}}/")),
+        dir_fa=directory(f"{OUTPUT_DIR}/SNPsplit/{{strain}}/{{strain}}_N-masked/"),
+        report=f"{OUTPUT_DIR}/SNPsplit/{{strain}}/{{strain}}_SNP_filtering_report.txt",
+        archive=f"{OUTPUT_DIR}/SNPsplit/{{strain}}/all_SNPs_{{strain}}_GRCm38.txt.gz",
     message:
         "snpsplit prepare"
     conda:
@@ -38,7 +38,7 @@ rule snp_split_create_sorted_bed:
     input:
         lambda wildcards: checkpoints.extract_snv_with_snp_split.get(**wildcards).output.archive
     output:
-        bed=f"{OUTPUT_DIR}/all_SNPs_{{strain}}_GRCm38.bed.gz"
+        bed=f"{OUTPUT_DIR}/SNPsplit/{{strain}}//all_SNPs_{{strain}}_GRCm38.bed.gz"
     log:
         logs="logs/create_bed_{strain}.log"
     shell:
@@ -64,10 +64,10 @@ rule merge_bed_files:
     Add "chr" prefix
     """
     input:
-        expand(f"{OUTPUT_DIR}/all_SNPs_{{strain}}_GRCm38.bed.gz", strain=STRAINS) +
+        expand(f"{OUTPUT_DIR}/SNPsplit/{{strain}}/all_SNPs_{{strain}}_GRCm38.bed.gz", strain=STRAINS) +
         add_additional_variants("Mus_caroli")
     output:
-        bed=f"{OUTPUT_DIR}/all_SNPs_all_strains_GRCm38.bed.gz",
+        bed=f"{OUTPUT_DIR}/merged/all_SNPs_all_strains_GRCm38.bed.gz",
     params:
         add_chr="| sed 's/^/chr/g' | "
     resources:
@@ -82,29 +82,14 @@ rule merge_bed_files:
         "{params.add_chr} "
         " gzip -c > {output.bed}"
 
-rule create_genome_file:
-    input:
-        fasta=config["genome"]
-    output:
-        "chromosome_lengths.txt"
-    envmodules:
-        "samtools"
-    params:
-        input_filename=lambda wildcards, input: os.path.basename(input.fasta)
-    shell:
-        "cp {input.fasta} {params.input_filename} && "
-        "samtools faidx {params.input_filename} && "
-        "cut -f1,2 {params.input_filename} | > {output}"
-
-
 
 rule intersection:
     input:
-        bed_files=expand(f"{OUTPUT_DIR}/all_SNPs_{{strain}}_GRCm38.bed.gz", strain=STRAINS) +
+        bed_files=expand(f"{OUTPUT_DIR}/SNPsplit/{{strain}}/all_SNPs_{{strain}}_GRCm38.bed.gz", strain=STRAINS) +
         add_additional_variants("Mus_caroli"),
         genome_file=rules.create_genome_file.output
     output:
-        f"{OUTPUT_DIR}/all_SNPs_all_strains_GRCm38.intersect.bed.gz",
+        f"{OUTPUT_DIR}/merged/all_SNPs_all_strains_GRCm38.intersect.bed.gz",
     params:
         names="CAST SPRET CAROLI"
     envmodules:
@@ -116,10 +101,10 @@ rule intersection:
 rule maskfasta:
     """Mask coordinates from BED file in FASTA"""
     input:
-        bed=f"{OUTPUT_DIR}/all_SNPs_all_strains_GRCm38.bed.gz",
+        bed=f"{OUTPUT_DIR}/merged/all_SNPs_all_strains_GRCm38.bed.gz",
         fasta=config["genome"]
     output:
-        fasta=f"{OUTPUT_DIR}/GRCm38_masked_allStrains.fa"
+        fasta=f"{OUTPUT_DIR}/merged/GRCm38_masked_allStrains.fa"
     resources:
         mem_mb=64000
     envmodules:

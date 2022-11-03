@@ -2,6 +2,9 @@
 
 Create a reference genome sequence with "injected" SNPs/SNVs from other mouse strains.
 
+![Rule graph](rulegraph.png)
+
+
 ## Input files
 
 - mouse reference genome
