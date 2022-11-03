@@ -19,9 +19,9 @@ def get_target_files(output_dir):
         for strain in STRAINS
     ],
     merged_strain_targets = [
-        f"{output_dir}/all_SNPs_all_strains_GRCm38.bed.gz",
-        f"{output_dir}/all_SNPs_all_strains_GRCm38.intersect.bed.gz",
-        f"{output_dir}/GRCm38_masked_all_strains"
+        f"{output_dir}/merged/all_SNPs_all_strains_GRCm38.bed.gz",
+        f"{output_dir}/merged/all_SNPs_all_strains_GRCm38.intersect.bed.gz",
+        f"{output_dir}/merged/GRCm38_masked_allStrains"
     ]
     )
 
