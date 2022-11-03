@@ -33,7 +33,7 @@ rule add_chr_prefix_to_fasta:
     shell:
         "echo 'running sed {params.sed_expr} to rename fasta header' > {log}; "
         "mkdir -p {output.dir}; "
-        "sed -E '{params.sed_expr}' {input} > {output.fasta} "
+        "sed -E '{params.sed_expr}' {input} > {output.fasta}; "
         "ln -s {output.fasta} {output.fasta_generic}"
 
 
