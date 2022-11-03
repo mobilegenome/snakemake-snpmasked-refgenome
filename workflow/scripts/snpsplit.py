@@ -6,7 +6,7 @@ from snakemake.script import shell
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
 output_dir = Path(snakemake.output.dir_snp).parent
-fasta_dir = Path(f"../{snakemake.input.ref_genome}").parent
+fasta_dir = Path(f"../../../../../{snakemake.input.ref_genome}").parent
 
 shell(
     f"mkdir -p {output_dir}; "
