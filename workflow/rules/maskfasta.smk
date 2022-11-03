@@ -14,7 +14,7 @@ checkpoint extract_snv_with_snp_split:
     """
     input:
         vcf_file="data/mgp.v5.merged.snps_all.dbSNP142.vcf.gz",
-        ref_genome=rules.strip_chr_prefix_from_fasta.output.dir,
+        ref_genome=rules.strip_chr_prefix_from_fasta.output.fasta_generic,
     output:
         dir_snp=temp(directory(f"{OUTPUT_DIR}/SNPsplit/{{strain}}/SNPs_{{strain}}/")),
         dir_fa=directory(f"{OUTPUT_DIR}/SNPsplit/{{strain}}/{{strain}}_N-masked/"),

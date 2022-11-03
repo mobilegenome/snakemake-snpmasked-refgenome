@@ -5,7 +5,8 @@ rule strip_chr_prefix_from_fasta:
     """
     input: config.get("genome"),
     output:
-        fasta=temp(f"{OUTPUT_DIR}/reference_assembly/genome.no_chr_prefix.fa"),
+        fasta=f"{OUTPUT_DIR}/reference_assembly/genome.no_chr_prefix.fa",
+        fasta_generic=f"{OUTPUT_DIR}/reference_assembly/genome.fa",
         dir=directory(f"{OUTPUT_DIR}/reference_assembly/")
     params:
         sed_expr="s/>.* />/g"
@@ -15,12 +16,14 @@ rule strip_chr_prefix_from_fasta:
     shell:
         "echo 'running sed {params.sed_expr} to rename fasta header' > {log}; "
         "mkdir -p {output.dir}; "
-        "sed '{params.sed_expr}' {input} > {output.fasta}"
+        "sed '{params.sed_expr}' {input} > {output.fasta} "
+        "ln -s {output.fasta} {output.fasta_generic}"
 
 rule add_chr_prefix_to_fasta:
     input: config.get("genome"),
     output:
         fasta=temp(f"{OUTPUT_DIR}/reference_assembly/genome.chr_prefix.fa"),
+        fasta_generic=f"{OUTPUT_DIR}/reference_assembly/genome.fa",
         dir=directory(f"{OUTPUT_DIR}/reference_assembly/")
     params:
         sed_expr="s/>([0-9MXY]{1,2})/>chr\1/g"
@@ -30,7 +33,9 @@ rule add_chr_prefix_to_fasta:
     shell:
         "echo 'running sed {params.sed_expr} to rename fasta header' > {log}; "
         "mkdir -p {output.dir}; "
-        "sed -E '{params.sed_expr}' {input} > {output.fasta}"
+        "sed -E '{params.sed_expr}' {input} > {output.fasta} "
+        "ln -s {output.fasta} {output.fasta_generic}"
+
 
 
 rule strip_chr_prefix_from_gtf:
