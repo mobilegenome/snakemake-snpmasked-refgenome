@@ -1,4 +1,6 @@
 import os
+import pathlib
+
 
 checkpoint extract_snv_with_snp_split:
     """
@@ -70,7 +72,7 @@ rule merge_bed_files:
         ) +
         add_additional_variants("Mus_caroli")
     output:
-        bed=f"{OUTPUT_DIR}/merged/all_SNPs_all_strains_GRCm38.bed.gz",
+        bed=OUTPUT_DIR + "/merged/all_SNPs_all_strains_GRCm38.bed.gz",
     params:
         add_chr="| sed 's/^/chr/g' | "
     resources:
