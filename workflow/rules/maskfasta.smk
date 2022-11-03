@@ -1,5 +1,6 @@
 import os
 import pathlib
+import tempfile
 
 
 checkpoint extract_snv_with_snp_split:
@@ -24,12 +25,12 @@ checkpoint extract_snv_with_snp_split:
     conda:
         "../envs/snpsplit.yml"
     log:
-        "logs/snp_split_{strain}.log",
+        f"{OUTPUT_DIR}/SNPsplit/snp_split_{{strain}}.log",
     params:
         strain=lambda wildcards: wildcards.strain,
-    shell:
-        "cd output; mkdir -p logs && "
-        "SNPsplit_genome_preparation --vcf_file ../{input.vcf_file} --strain {params.strain} --reference_genome ../{input.ref_genome} > {log}"
+    script:
+        "../scripts/snpsplit.py"
+
 
 rule snp_split_create_sorted_bed:
     """
