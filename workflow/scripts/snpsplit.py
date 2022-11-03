@@ -12,7 +12,7 @@ shell(
     f"mkdir -p {output_dir}; "
     f"cd {output_dir}; "
     "SNPsplit_genome_preparation "
-    "--vcf_file ../../../{snakemake.input.vcf_file} "
+    "--vcf_file ../../../../{snakemake.input.vcf_file} "
     "--strain {snakemake.params.strain} "
     f"--reference_genome {fasta_dir} {log}"
 )
