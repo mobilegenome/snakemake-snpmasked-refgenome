@@ -25,7 +25,7 @@ checkpoint extract_snv_with_snp_split:
     conda:
         "../envs/snpsplit.yml"
     log:
-        f"{OUTPUT_DIR}/SNPsplit/snp_split_{{strain}}.log",
+        f"snp_split_{{strain}}.log",
     params:
         strain=lambda wildcards: wildcards.strain,
     script:
