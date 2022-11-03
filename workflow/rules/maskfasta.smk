@@ -92,9 +92,8 @@ rule intersection:
     input:
         bed_files=expand(f"{{output_dir}}/SNPsplit/{{strain}}/all_SNPs_{{strain}}_GRCm38.bed.gz",
             strain=STRAINS,
-            output_dir=[OUTPUT_DIR]
-        ) +
-        add_additional_variants("Mus_caroli"),
+            output_dir=[OUTPUT_DIR]) +
+                  add_additional_variants("Mus_caroli"),
         genome_file=rules.create_genome_file.output
     output:
         OUTPUT_DIR + "/merged/all_SNPs_all_strains_GRCm38.intersect.bed.gz",
