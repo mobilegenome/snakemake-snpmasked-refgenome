@@ -64,7 +64,7 @@ rule merge_bed_files:
     Add "chr" prefix
     """
     input:
-        expand(f"{OUTPUT_DIR}/SNPsplit/{{strain}}/all_SNPs_{{strain}}_GRCm38.bed.gz", strain=STRAINS) +
+        expand(f"{{OUTPUT_DIR}}/SNPsplit/{{strain}}/all_SNPs_{{strain}}_GRCm38.bed.gz", strain=STRAINS) +
         add_additional_variants("Mus_caroli")
     output:
         bed=f"{OUTPUT_DIR}/merged/all_SNPs_all_strains_GRCm38.bed.gz",
