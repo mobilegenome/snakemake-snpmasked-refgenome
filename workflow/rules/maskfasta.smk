@@ -104,7 +104,7 @@ rule maskfasta:
         bed=f"{OUTPUT_DIR}/merged/all_SNPs_all_strains_GRCm38.bed.gz",
         fasta=config["genome"]
     output:
-        fasta=f"{OUTPUT_DIR}/merged/GRCm38_masked_allStrains.fa"
+        fasta=f"{OUTPUT_DIR}/merged/GRCm38_masked_all_strains.fa"
     resources:
         mem_mb=64000
     envmodules:
