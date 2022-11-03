@@ -94,7 +94,7 @@ rule intersection:
         add_additional_variants("Mus_caroli"),
         genome_file=rules.create_genome_file.output
     output:
-        f"{OUTPUT_DIR}/merged/all_SNPs_all_strains_GRCm38.intersect.bed.gz",
+        OUTPUT_DIR + "/merged/all_SNPs_all_strains_GRCm38.intersect.bed.gz",
     params:
         names="CAST SPRET CAROLI"
     envmodules:
