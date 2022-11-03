@@ -17,7 +17,9 @@ rule strip_chr_prefix_from_fasta:
         "echo 'running sed {params.sed_expr} to rename fasta header' > {log}; "
         "mkdir -p {output.dir}; "
         "sed '{params.sed_expr}' {input} > {output.fasta};  "
-        "ln -fs {output.fasta} {output.fasta_generic}; "
+        "cd $(dirname {output.fasta} ) && "
+        "ln -fs $(basename {output.fasta}) $(basename {output.fasta_generic})"
+
 
 rule add_chr_prefix_to_fasta:
     input: config.get("genome"),
@@ -34,7 +36,8 @@ rule add_chr_prefix_to_fasta:
         "echo 'running sed {params.sed_expr} to rename fasta header' > {log}; "
         "mkdir -p {output.dir}; "
         "sed -E '{params.sed_expr}' {input} > {output.fasta}; "
-        "ln -fs {output.fasta} {output.fasta_generic}"
+        "cd $(dirname {output.fasta} ) && "
+        "ln -fs $(basename {output.fasta}) $(basename {output.fasta_generic})"
 
 
 
