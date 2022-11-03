@@ -13,7 +13,7 @@ OUTPUT_DIR=config["output_directory"]
 def get_target_files(output_dir):
     target_files = dict(
     snp_split_targets =[
-        "{outdir}/all_SNPs_{strain}_GRCm38.bed.gz".format(
+        "{outdir}/SNPsplit/{strain}/all_SNPs_{strain}_GRCm38.bed.gz".format(
             outdir=output_dir,
             strain=strain)
         for strain in STRAINS
@@ -27,7 +27,7 @@ def get_target_files(output_dir):
 
     if PER_STRAIN_FASTA:
         target_files["single_strain_targets"] = \
-                ["{outdir}/GRCm38_masked_{strain}".format(
+                ["{outdir}/{strain}/GRCm38_masked_{strain}".format(
                     outdir=output_dir,
                     strain=strain)
                     for strain in STRAINS]
