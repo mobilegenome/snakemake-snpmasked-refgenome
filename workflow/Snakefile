@@ -43,8 +43,10 @@ print(all_files)
 localrules:
     all,
     snp_split_concat,
-    rename_fasta_header,
-    rename_gtf_names
+    strip_chr_prefix_from_fasta,
+    add_chr_prefix_to_fasta,
+    strip_chr_prefix_from_gtf,
+    create_genome_file
 
 
 rule all:
