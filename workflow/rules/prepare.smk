@@ -17,7 +17,7 @@ rule strip_chr_prefix_from_fasta:
         "echo 'running sed {params.sed_expr} to rename fasta header' > {log}; "
         "mkdir -p {output.dir}; "
         "sed '{params.sed_expr}' {input} > {output.fasta};  "
-        "echo 'CHR PREFIXES REMOVED' > GENOME_INFO"
+        "echo 'CHR PREFIXES REMOVED' > {output.infofile}"
 
 
 rule add_chr_prefix_to_fasta:
@@ -35,7 +35,7 @@ rule add_chr_prefix_to_fasta:
         "echo 'running sed {params.sed_expr} to rename fasta header' > {log}; "
         "mkdir -p {output.dir}; "
         "sed -E '{params.sed_expr}' {input} > {output.fasta}; "
-        "echo 'CHR PREFIXES ADDED' > GENOME_INFO"
+        "echo 'CHR PREFIXES ADDED' > {output.infofile}"
 
 
 
