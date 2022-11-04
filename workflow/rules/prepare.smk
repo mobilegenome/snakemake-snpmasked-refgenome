@@ -5,8 +5,8 @@ rule strip_chr_prefix_from_fasta:
     """
     input: config.get("genome"),
     output:
-        fasta=f"{OUTPUT_DIR}/reference_assembly/genome.no_chr_prefix.fa",
-        fasta_generic=f"{OUTPUT_DIR}/reference_assembly/genome.fa",
+        fasta=f"{OUTPUT_DIR}/reference_assembly/genome.fa",
+        infofile=f"{OUTPUT_DIR}/reference_assembly/GENOME_INFO",  # SNPsplit reads all FASTA files, hence we need one filename and store info here
         dir=directory(f"{OUTPUT_DIR}/reference_assembly/")
     params:
         sed_expr="s/>.* />/g"
@@ -17,15 +17,14 @@ rule strip_chr_prefix_from_fasta:
         "echo 'running sed {params.sed_expr} to rename fasta header' > {log}; "
         "mkdir -p {output.dir}; "
         "sed '{params.sed_expr}' {input} > {output.fasta};  "
-        "cd $(dirname {output.fasta} ) && "
-        "ln -fs $(basename {output.fasta}) $(basename {output.fasta_generic})"
+        "echo 'CHR PREFIXES REMOVED' > GENOME_INFO"
 
 
 rule add_chr_prefix_to_fasta:
     input: config.get("genome"),
     output:
-        fasta=temp(f"{OUTPUT_DIR}/reference_assembly/genome.chr_prefix.fa"),
-        fasta_generic=f"{OUTPUT_DIR}/reference_assembly/genome.fa",
+        fasta=f"{OUTPUT_DIR}/reference_assembly/genome.fa",
+        infofile=f"{OUTPUT_DIR}/reference_assembly/GENOME_INFO",  # SNPsplit reads all FASTA files, hence we need one filename and store info here
         dir=directory(f"{OUTPUT_DIR}/reference_assembly/")
     params:
         sed_expr="s/>([0-9MXY]{1,2})/>chr\1/g"
@@ -36,8 +35,7 @@ rule add_chr_prefix_to_fasta:
         "echo 'running sed {params.sed_expr} to rename fasta header' > {log}; "
         "mkdir -p {output.dir}; "
         "sed -E '{params.sed_expr}' {input} > {output.fasta}; "
-        "cd $(dirname {output.fasta} ) && "
-        "ln -fs $(basename {output.fasta}) $(basename {output.fasta_generic})"
+        "echo 'CHR PREFIXES ADDED' > GENOME_INFO"
 
 
 
