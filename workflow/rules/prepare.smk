@@ -65,5 +65,5 @@ rule create_genome_file:
     shell:
         "cp {input.fasta} {params.input_filename} && "
         "samtools faidx {params.input_filename} && "
-        "cut -f1,2 {params.input_filename} > {output} && "
+        "cut -f1,2 {params.input_filename}.fai > {output} && "
         "rm {params.input_filename} "
