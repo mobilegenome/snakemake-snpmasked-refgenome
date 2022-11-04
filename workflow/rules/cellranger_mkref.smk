@@ -58,7 +58,7 @@ rule cellranger_rna_mkref_merged:
         fasta=rules.maskfasta.output.fasta,
         annotation=cellranger_mkref_get_gtf_input()
     output:
-        directory(f"{OUTPUT_DIR}/merged/GRCm38_masked_all_strains"),
+        directory(f"{OUTPUT_DIR}/merged/GRCm38_masked_allStrains"),
     params:
         mem=300,
         output_root_dir=lambda wildcards, output: Path(output[0]).parent,
