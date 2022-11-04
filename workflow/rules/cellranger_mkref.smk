@@ -61,19 +61,13 @@ rule cellranger_rna_mkref_merged:
         directory(f"{OUTPUT_DIR}/merged/GRCm38_masked_allStrains"),
     params:
         mem=300,
-        output_root_dir=lambda wildcards, output: Path(output[0]).parent,
-        genome="GRCm38_masked_allStrains",
+        genome=lambda wildcards, output: Path(output[0]).parts[-1] #"GRCm38_masked_allStrains",
     envmodules:
         "cellranger/6.1.1"
     log:
-        "logs/cellranger_rna_mkref_GRCm38_masked_allStrains.log",
-    shell:
-        "cd {params.output_root_dir} && "
-        "cellranger mkref "
-        "--genome={params.genome} "
-        "--fasta=../../{input.fasta} "
-        "--genes={input.annotation} "
-        "--memgb={params.mem} > {log}"
+        "cellranger_rna_mkref_GRCm38_masked_allStrains.log",
+    script:
+        "../scripts/cellranger_mkref.py"
 
 if PER_STRAIN_FASTA:
     rule cellranger_rna_mkref:
