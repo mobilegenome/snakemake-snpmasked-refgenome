@@ -5,8 +5,10 @@ from snakemake.script import shell
 
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
-output_dir = Path(snakemake.output.dir_snp).parent
-fasta_dir = Path(snakemake.input.ref_genome).parent
+
+input_vcf = Path(snakemake.input.vcf_file).absolute()
+output_dir = Path(snakemake.output.dir_snp).parent.absolute()
+fasta_dir = Path(snakemake.input.ref_genome).parent.absolute()
 
 shell(
     f"mkdir -p {output_dir}; "
