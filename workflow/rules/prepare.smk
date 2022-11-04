@@ -59,7 +59,7 @@ rule create_genome_file:
     input:
         fasta=config["genome"]
     output:
-        "{OUTPUT_DIR}/reference_assembly/genome_chromosome_lengths.txt"
+        f"{OUTPUT_DIR}/reference_assembly/genome_chromosome_lengths.txt"
     envmodules:
         "samtools"
     params:
