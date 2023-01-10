@@ -10,6 +10,7 @@ STRAINS = config["strains"]
 MODE = config["mode"]
 OUTPUT_DIR=config["output_directory"]
 PER_STRAIN_FASTA = config["per_strain_fasta"]
+MAKE_CELLRANGER_REFERENCE = config["make_cellranger_reference"]
 
 
 if MODE == "incorporate_snvs":
@@ -69,4 +70,5 @@ rule all:
 
 include: "rules/prepare.smk"
 include: "rules/maskfasta.smk"
-include: "rules/cellranger_mkref.smk"
+if MAKE_CELLRANGER_REFERENCE:
+    include: "rules/cellranger_mkref.smk"
