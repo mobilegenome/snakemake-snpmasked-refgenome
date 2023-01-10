@@ -9,6 +9,7 @@ additional_variant_bed_files:
   Mus_caroli: "/omics/groups/OE0538/internal/users/f844s/2022-bonemarrow/data/m.caroli/Caroli.snp.mm10.no_indels.no_chr.bed.sorted.gz"
 per_strain_fasta: False
 cellranger_filter_gtf: False
+mode: "incorporate_snvs"  # set "maskfasta" or "incorporate_snvs"
 output_directory: "results/masked_reference"
 cellranger_accepted_gene_transcript_types:
   - "protein_coding" 

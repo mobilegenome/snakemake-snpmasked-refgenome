@@ -7,8 +7,14 @@ from pathlib import Path
 
 # get config variables
 STRAINS = config["strains"]
-PER_STRAIN_FASTA = config["per_strain_fasta"]
+MODE = config["mode"]
 OUTPUT_DIR=config["output_directory"]
+PER_STRAIN_FASTA = config["per_strain_fasta"]
+
+
+if MODE == "incorporate_snvs":
+    # set PER_STRAIN_FASTA to True if MODE is set to inject SNVs
+    PER_STRAIN_FASTA = True
 
 def get_target_files(output_dir):
     target_files = dict(
@@ -17,13 +23,14 @@ def get_target_files(output_dir):
             outdir=output_dir,
             strain=strain)
         for strain in STRAINS
-    ],
-    merged_strain_targets = [
-        f"{output_dir}/merged/all_SNPs_all_strains_GRCm38.bed.gz",
-        f"{output_dir}/merged/all_SNPs_all_strains_GRCm38.intersect.bed.gz",
-        f"{output_dir}/merged/GRCm38_masked_allStrains"
-    ]
-    )
+    ])
+
+    if MODE == "maskfasta":
+        target_files["merged_strain_targets"] = [
+            f"{output_dir}/merged/all_SNPs_all_strains_GRCm38.bed.gz",
+            f"{output_dir}/merged/all_SNPs_all_strains_GRCm38.intersect.bed.gz",
+            f"{output_dir}/merged/GRCm38_masked_allStrains"
+        ]
 
     if PER_STRAIN_FASTA:
         target_files["single_strain_targets"] = \
