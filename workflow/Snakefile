@@ -11,6 +11,7 @@ MODE = config["mode"]
 OUTPUT_DIR=config["output_directory"]
 PER_STRAIN_FASTA = config["per_strain_fasta"]
 MAKE_CELLRANGER_REFERENCE = config["make_cellranger_reference"]
+MGP_VCF_FILE = config["mgp_vcf_file"]
 
 
 if MODE == "incorporate_snvs":

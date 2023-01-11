@@ -2,6 +2,7 @@ executables:
   cellranger-rna: "/software/cellranger/6.0.0/bin/cellranger mkref"
 genome: "/omics/groups/OE0538/internal/users/f844s/cellranger-ref/mm10/refdata-gex-mm10-2020-A/fasta/genome.fa"
 annotation: "/omics/groups/OE0538/internal/users/f844s/cellranger-ref/mm10/refdata-gex-mm10-2020-A/genes/genes.gtf"
+mgp_vcf_file: "/omics/groups/OE0538/internal/shared_data/mouse_dbsnp_keane2015/mgp.v5.merged.snps_all.dbSNP142.vcf.gz"
 strains:
   - SPRET_EiJ
   - CAST_EiJ

@@ -14,7 +14,7 @@ if MODE == "incorporate_snvs":
         
         """
         input:
-            vcf_file="data/mgp.v5.merged.snps_all.dbSNP142.vcf.gz",
+            vcf_file=MGP_VCF_FILE,
             ref_genome=rules.strip_chr_prefix_from_fasta.output.fasta,
         output:
             dir_snp=temp(directory(f"{OUTPUT_DIR}/SNPsplit/{{strain}}/SNPs_{{strain}}/")),
