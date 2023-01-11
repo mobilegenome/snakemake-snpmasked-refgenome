@@ -3,36 +3,67 @@ import pathlib
 import tempfile
 
 
-checkpoint extract_snv_with_snp_split:
-    """
-    Extract SNVs from the Mouse Genome Project (MGP) VCF file 
-    for strains listed in configured `strains` using SNPsplit's 
-    genome_preparation tool
-    
-    SNPsplit: https://github.com/FelixKrueger/SNPsplit
-    
-    """
-    input:
-        vcf_file="data/mgp.v5.merged.snps_all.dbSNP142.vcf.gz",
-        ref_genome=rules.strip_chr_prefix_from_fasta.output.fasta,
-    output:
-        dir_snp=temp(directory(f"{OUTPUT_DIR}/SNPsplit/{{strain}}/SNPs_{{strain}}/")),
-        dir_fa=directory(f"{OUTPUT_DIR}/SNPsplit/{{strain}}/{{strain}}_N-masked/"),
-        report=f"{OUTPUT_DIR}/SNPsplit/{{strain}}/{{strain}}_SNP_filtering_report.txt",
-        archive=f"{OUTPUT_DIR}/SNPsplit/{{strain}}/all_SNPs_{{strain}}_GRCm38.txt.gz",
-    message:
-        "snpsplit prepare"
-    conda:
-        "../envs/snpsplit.yml"
-    log:
-        f"snp_split_{{strain}}.log",
-    params:
-        strain=lambda wildcards: wildcards.strain,
-        incorporate_snvs=True if MODE == "incorporate_snvs" else False
-    script:
-        "../scripts/snpsplit.py"
+if MODE == "incorporate_snvs":
+    checkpoint extract_snv_with_snp_split:
+        """
+        Extract SNVs from the Mouse Genome Project (MGP) VCF file 
+        for strains listed in configured `strains` using SNPsplit's 
+        genome_preparation tool
+        
+        SNPsplit: https://github.com/FelixKrueger/SNPsplit
+        
+        """
+        input:
+            vcf_file="data/mgp.v5.merged.snps_all.dbSNP142.vcf.gz",
+            ref_genome=rules.strip_chr_prefix_from_fasta.output.fasta,
+        output:
+            dir_snp=temp(directory(f"{OUTPUT_DIR}/SNPsplit/{{strain}}/SNPs_{{strain}}/")),
+            dir_fa=directory(f"{OUTPUT_DIR}/SNPsplit/{{strain}}/{{strain}}_full_sequence/"),
+            report=f"{OUTPUT_DIR}/SNPsplit/{{strain}}/{{strain}}_SNP_filtering_report.txt",
+            archive=f"{OUTPUT_DIR}/SNPsplit/{{strain}}/all_SNPs_{{strain}}_GRCm38.txt.gz",
+        message:
+            "snpsplit prepare"
+        conda:
+            "../envs/snpsplit.yml"
+        log:
+            f"snp_split_{{strain}}.log",
+        params:
+            strain=lambda wildcards: wildcards.strain,
+            incorporate_snvs=True
+        script:
+            "../scripts/snpsplit.py"
 
 if MODE == "maskfasta":
+
+    checkpoint extract_snv_with_snp_split:
+        """
+        Extract SNVs from the Mouse Genome Project (MGP) VCF file
+        for strains listed in configured `strains` using SNPsplit's
+        genome_preparation tool
+    
+        SNPsplit: https://github.com/FelixKrueger/SNPsplit
+    
+        """
+        input:
+            vcf_file="data/mgp.v5.merged.snps_all.dbSNP142.vcf.gz",
+            ref_genome=rules.strip_chr_prefix_from_fasta.output.fasta,
+        output:
+            dir_snp=temp(directory(f"{OUTPUT_DIR}/SNPsplit/{{strain}}/SNPs_{{strain}}/")),
+            dir_fa=directory(f"{OUTPUT_DIR}/SNPsplit/{{strain}}/{{strain}}_N-masked/"),
+            report=f"{OUTPUT_DIR}/SNPsplit/{{strain}}/{{strain}}_SNP_filtering_report.txt",
+            archive=f"{OUTPUT_DIR}/SNPsplit/{{strain}}/all_SNPs_{{strain}}_GRCm38.txt.gz",
+        message:
+            "snpsplit prepare"
+        conda:
+            "../envs/snpsplit.yml"
+        log:
+            f"snp_split_{{strain}}.log",
+        params:
+            strain=lambda wildcards: wildcards.strain,
+            incorporate_snvs=False
+        script:
+            "../scripts/snpsplit.py"
+
     rule snp_split_create_sorted_bed:
         """
         Convert extracted SNV from from SNPsplit to a gzipped BED file.
@@ -123,6 +154,7 @@ if MODE == "maskfasta":
             "bedtools maskfasta -bed {input.bed} -fi {input.fasta} -fo {output.fasta}"
 
 if PER_STRAIN_FASTA:
+    mode_label = "masked" if MODE == "maskfasta" else "full_sequence"
     rule snp_split_concat:
         """Concatenate per-chromsome/scaffold FASTA files from SNPsplit 
         to a unified genome-wide FASTA.
@@ -139,7 +171,7 @@ if PER_STRAIN_FASTA:
         wildcard_constraints:
             strain="|".join(config.get("strains")),
         output:
-            f"{OUTPUT_DIR}/GRCm38_masked_{{strain}}.fa",
+            f"{OUTPUT_DIR}/GRCm38_{mode_label}_{{strain}}.fa",
         run:
             print("{input}")
             shell("cat {input} > {output}")

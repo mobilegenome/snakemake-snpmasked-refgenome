@@ -35,8 +35,9 @@ def get_target_files(output_dir):
 
     if PER_STRAIN_FASTA:
         target_files["single_strain_targets"] = \
-                ["{outdir}/{strain}/GRCm38_masked_{strain}".format(
+                ["{outdir}/{strain}/GRCm38_{mode_label}_{strain}.fa".format(
                     outdir=output_dir,
+                    mode_label="masked" if MODE == "maskfasta" else "full_sequence",
                     strain=strain)
                     for strain in STRAINS]
 
