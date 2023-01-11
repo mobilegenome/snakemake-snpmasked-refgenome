@@ -18,19 +18,28 @@ if MODE == "incorporate_snvs":
     PER_STRAIN_FASTA = True
 
 def get_target_files(output_dir):
-    target_files = dict(
-    snp_split_targets =[
-        "{outdir}/SNPsplit/{strain}/all_SNPs_{strain}_GRCm38.bed.gz".format(
+    target_files = {}
+
+    target_files["snp_split_targets"] = [
+        "{outdir}/SNPsplit/{strain}/all_SNPs_{strain}_GRCm38.txt.gz".format(
             outdir=output_dir,
             strain=strain)
         for strain in STRAINS
-    ])
+]
+
 
     if MODE == "maskfasta":
         target_files["merged_strain_targets"] = [
             f"{output_dir}/merged/all_SNPs_all_strains_GRCm38.bed.gz",
             f"{output_dir}/merged/all_SNPs_all_strains_GRCm38.intersect.bed.gz",
             f"{output_dir}/merged/GRCm38_masked_allStrains"
+        ]
+
+        target_files["snp_split_targets"] = [
+            "{outdir}/SNPsplit/{strain}/all_SNPs_{strain}_GRCm38.bed.gz".format(
+            outdir=output_dir,
+            strain=strain)
+        for strain in STRAINS
         ]
 
     if PER_STRAIN_FASTA:

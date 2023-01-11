@@ -171,7 +171,7 @@ if PER_STRAIN_FASTA:
         wildcard_constraints:
             strain="|".join(config.get("strains")),
         output:
-            f"{OUTPUT_DIR}/GRCm38_{mode_label}_{{strain}}.fa",
+            f"{OUTPUT_DIR}/{{strain}}/GRCm38_{mode_label}_{{strain}}.fa",
         run:
             print("{input}")
             shell("cat {input} > {output}")
