@@ -55,7 +55,7 @@ if MODE == "incorporate_snvs":
         message:
             f"Inject snvs for {strain} from BED file"
         conda:
-            "../envs/snpsplit.yml"
+            "../envs/inject_snvs_to_fasta.yml"
         log:
             f"inject_snvs_to_fasta_{strain}.log",
         script:
