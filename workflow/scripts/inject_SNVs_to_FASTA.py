@@ -10,10 +10,10 @@ from Bio import SeqIO, Seq
 from Bio import SeqRecord
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 
-input_fasta = snakemake.input.fasta[0]
-input_bed = snakemake.input.bed[0]
+input_fasta = Path(snakemake.input.fasta)
+input_bed = Path(snakemake.input.bed)
 
-output_fasta = snakemake.output[0]
+output_fasta = Path(snakemake.output[0])
 
 logfile = snakemake.log
 
