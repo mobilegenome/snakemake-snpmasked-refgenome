@@ -15,7 +15,7 @@ input_bed = Path(snakemake.input.bed[0])
 
 output_fasta = Path(snakemake.output.fasta[0])
 
-logfile = snakemake.log
+logfile = open(snakemake.log[0], "w")
 
 print(f"Input files: {input_fasta}, {input_bed}", file=logfile)
 print(f"Output file: {output_fasta}", file=logfile)
@@ -115,3 +115,5 @@ df_snv = snvs.to_dataframe().rename(columns=
 df_snv = filter_indels(df_snv)
 
 inject_snvs(input_fasta, output_fasta, df_snv)
+
+logfile.close()
