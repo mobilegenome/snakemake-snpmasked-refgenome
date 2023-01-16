@@ -13,7 +13,7 @@ from Bio.SeqIO.FastaIO import SimpleFastaParser
 input_fasta = Path(snakemake.input.fasta[0])
 input_bed = Path(snakemake.input.bed[0])
 
-output_fasta = Path(snakemake.output[0])
+output_fasta = Path(snakemake.output)
 
 logfile = snakemake.log
 
