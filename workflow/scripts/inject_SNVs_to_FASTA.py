@@ -17,6 +17,9 @@ output_fasta = Path(snakemake.output.fasta[0])
 
 logfile = snakemake.log
 
+print(f"Input files: {input_fasta}, {input_bed}", file=logfile)
+print(f"Output file: {output_fasta}", file=logfile)
+
 def test_inject_snvs():
     test_BED_string = """
     chr1   2 3 C       T
