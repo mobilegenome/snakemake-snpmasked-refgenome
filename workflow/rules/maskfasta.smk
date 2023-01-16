@@ -51,7 +51,7 @@ if MODE == "incorporate_snvs":
             fasta=rules.strip_chr_prefix_from_fasta.output.fasta,
             bed=add_additional_variants(strain),
         output:
-            f"{OUTPUT_DIR}/{strain}/GRCm38_full_sequence_{strain}.fa"
+            fasta=f"{OUTPUT_DIR}/{strain}/GRCm38_full_sequence_{strain}.fa"
         message:
             f"Inject snvs for {strain} from BED file"
         conda:
