@@ -10,8 +10,8 @@ from Bio import SeqIO, Seq
 from Bio import SeqRecord
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 
-input_fasta = Path(snakemake.input.fasta)
-input_bed = Path(snakemake.input.bed)
+input_fasta = Path(snakemake.input.fasta[0])
+input_bed = Path(snakemake.input.bed[0])
 
 output_fasta = Path(snakemake.output[0])
 
