@@ -2,6 +2,18 @@ import os
 import pathlib
 import tempfile
 
+def add_additional_variants(*labels):
+    add_bed_files = config["additional_variant_bed_files"]
+    paths = []
+    for label in labels:
+        if label in add_bed_files:
+            paths.append(add_bed_files[label])
+        else:
+            raise KeyError(f"Key {label} not found in config: {add_bed_files.keys()}")
+    if paths:
+        return paths
+    else:
+        raise ValueError
 
 if MODE == "incorporate_snvs":
     checkpoint extract_snv_with_snp_split:
@@ -97,18 +109,7 @@ if MODE == "maskfasta":
             "zcat {input} | sort -V -k2,2 -k3,3 | awk 'OFS=\"\t\" {{print $2, $3-1, $3, $5}}' | gzip -c > {output.bed} 2> {log}"
 
 
-    def add_additional_variants(*labels):
-        add_bed_files = config["additional_variant_bed_files"]
-        paths = []
-        for label in labels:
-            if label in add_bed_files:
-                paths.append(add_bed_files[label])
-            else:
-                raise KeyError(f"Key {label} not found in config: {add_bed_files.keys()}")
-        if paths:
-            return paths
-        else:
-            raise ValueError
+
 
     rule merge_bed_files:
         """Merge multipe BED files
