@@ -89,7 +89,7 @@ def inject_snvs(fasta_in: Path,
         fasta = SimpleFastaParser(fh_in)
 
         for seqname, seq in fasta:
-            if not seqname in df_snv.chrom.drop_duplicates:
+            if not seqname in df_snv.chrom.drop_duplicates():
                 print(f"Chrom {seqname} not found in Bedfile skipping...")
                 continue
             seq = np.array(Seq(seq))
