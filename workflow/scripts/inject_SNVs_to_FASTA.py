@@ -13,7 +13,7 @@ from Bio.SeqIO.FastaIO import SimpleFastaParser
 input_fasta = Path(snakemake.input.fasta)
 input_bed = Path(snakemake.input.bed[0])
 
-output_fasta = Path(snakemake.output.fasta[0])
+output_fasta = Path(snakemake.output.fasta)
 
 logfile = open(snakemake.log[0], "w")
 
@@ -114,6 +114,7 @@ df_snv = snvs.to_dataframe().rename(columns=
                                      "score": "alt"})
 df_snv = filter_indels(df_snv)
 
+print(df_snv.chrom.drop_duplicates(), file=logfile)
 inject_snvs(input_fasta, output_fasta, df_snv)
 
 logfile.close()
