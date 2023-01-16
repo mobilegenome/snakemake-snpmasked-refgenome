@@ -86,6 +86,9 @@ def inject_snvs(fasta_in: Path,
         fasta = SimpleFastaParser(fh_in)
 
         for seqname, seq in fasta:
+            if not seqname in df_snv.chrom.drop_duplicates:
+                print(f"Chrom {seqname} not found in Bedfile skipping...")
+                continue
             seq = np.array(Seq(seq))
             snvs = df_snv[df_snv.chrom == seqname]
             coords, ref_alleles, alt_alleles = snvs.start.to_list(), snvs.ref.to_list(),snvs.alt.to_list()
