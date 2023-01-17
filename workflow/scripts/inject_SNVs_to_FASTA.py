@@ -6,7 +6,8 @@ import pandas as pd
 from pathlib import Path
 
 from pybedtools import BedTool
-from Bio import SeqIO, Seq
+from Bio import SeqIO
+from Bio import Seq
 from Bio import SeqRecord
 from Bio.SeqIO.FastaIO import SimpleFastaParser
 
@@ -92,7 +93,7 @@ def inject_snvs(fasta_in: Path,
             if not seqname in df_snv.chrom.drop_duplicates():
                 print(f"Chrom {seqname} not found in Bedfile skipping...")
                 continue
-            seq = np.array(Seq(seq))
+            seq = np.array(Seq.Seq(seq))
             snvs = df_snv[df_snv.chrom == seqname]
             coords, ref_alleles, alt_alleles = snvs.start.to_list(), snvs.ref.to_list(),snvs.alt.to_list()
             for coord, ref, alt in zip(coords, ref_alleles, alt_alleles):
@@ -112,6 +113,9 @@ snvs = BedTool(input_bed)
 df_snv = snvs.to_dataframe().rename(columns=
                                     {"name": "ref",
                                      "score": "alt"})
+
+df_snv["chrom"] = df_snv.chrom.astype(str)  # convert chromosome column to strings
+
 df_snv = filter_indels(df_snv)
 
 print(df_snv.chrom.drop_duplicates(), file=logfile)
