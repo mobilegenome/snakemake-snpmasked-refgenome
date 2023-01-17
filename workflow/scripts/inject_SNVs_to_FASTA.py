@@ -88,7 +88,7 @@ def inject_snvs(fasta_in: Path,
                 fasta_out: Path,
                 df_snv: pd.DataFrame):
 
-    seqindex = SeqIO.index(fasta_in, "fasta")
+    seqindex = SeqIO.index(str(fasta_in), "fasta")
     modified_sequences = []
 
     for seqname in seqindex:
