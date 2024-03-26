@@ -18,12 +18,12 @@ def add_additional_variants(*labels):
 if MODE == "incorporate_snvs":
     checkpoint extract_snv_with_snp_split:
         """
-        Extract SNVs from the Mouse Genome Project (MGP) VCF file 
-        for strains listed in configured `strains` using SNPsplit's 
+        Extract SNVs from the Mouse Genome Project (MGP) VCF file
+        for strains listed in configured `strains` using SNPsplit's
         genome_preparation tool
-        
+
         SNPsplit: https://github.com/FelixKrueger/SNPsplit
-        
+
         """
         input:
             vcf_file=MGP_VCF_FILE,
@@ -69,12 +69,12 @@ if MODE == "maskfasta":
         Extract SNVs from the Mouse Genome Project (MGP) VCF file
         for strains listed in configured `strains` using SNPsplit's
         genome_preparation tool
-    
+
         SNPsplit: https://github.com/FelixKrueger/SNPsplit
-    
+
         """
         input:
-            vcf_file="data/mgp.v5.merged.snps_all.dbSNP142.vcf.gz",
+            vcf_file=MGP_VCF_FILE,
             ref_genome=rules.strip_chr_prefix_from_fasta.output.fasta,
         output:
             dir_snp=temp(directory(f"{OUTPUT_DIR}/SNPsplit/{{strain}}/SNPs_{{strain}}/")),
@@ -96,8 +96,8 @@ if MODE == "maskfasta":
     rule snp_split_create_sorted_bed:
         """
         Convert extracted SNV from from SNPsplit to a gzipped BED file.
-        
-        
+
+
         """
         input:
             lambda wildcards: checkpoints.extract_snv_with_snp_split.get(**wildcards).output.archive
@@ -113,7 +113,7 @@ if MODE == "maskfasta":
 
     rule merge_bed_files:
         """Merge multipe BED files
-        
+
         Add "chr" prefix
         """
         input:
@@ -174,7 +174,7 @@ if MODE == "maskfasta":
 if PER_STRAIN_FASTA:
     mode_label = "masked" if MODE == "maskfasta" else "full_sequence"
     rule snp_split_concat:
-        """Concatenate per-chromsome/scaffold FASTA files from SNPsplit 
+        """Concatenate per-chromsome/scaffold FASTA files from SNPsplit
         to a unified genome-wide FASTA.
         """
         input:
