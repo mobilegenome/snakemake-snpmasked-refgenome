@@ -65,7 +65,7 @@ rule cellranger_rna_mkref_merged:
     envmodules:
         "cellranger/6.1.1"
     log:
-        "cellranger_rna_mkref_GRCm38_masked_allStrains.log",
+        "logs/cellranger_rna_mkref_GRCm38_masked_allStrains.log",
     script:
         "../scripts/cellranger_mkref.py"
 

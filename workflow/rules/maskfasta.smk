@@ -38,7 +38,7 @@ if MODE == "incorporate_snvs":
         conda:
             "../envs/snpsplit.yml"
         log:
-            f"snp_split_{{strain}}.log",
+            f"logs/snp_split_{{strain}}.log",
         params:
             strain=lambda wildcards: wildcards.strain,
             incorporate_snvs=True
@@ -57,7 +57,7 @@ if MODE == "incorporate_snvs":
         conda:
             "../envs/inject_snvs_to_fasta.yml"
         log:
-            f"inject_snvs_to_fasta_{strain}.log",
+            f"logs/inject_snvs_to_fasta_{strain}.log",
         script:
             "../scripts/inject_SNVs_to_FASTA.py"
 
@@ -86,7 +86,7 @@ if MODE == "maskfasta":
         conda:
             "../envs/snpsplit.yml"
         log:
-            f"snp_split_{{strain}}.log",
+            f"logs/snp_split_{{strain}}.log",
         params:
             strain=lambda wildcards: wildcards.strain,
             incorporate_snvs=False
