@@ -38,7 +38,7 @@ if MODE == "incorporate_snvs":
         conda:
             "../envs/snpsplit.yml"
         log:
-            f"logs/snp_split_{{strain}}.log",
+            f"snp_split_{{strain}}.log",
         params:
             strain=lambda wildcards: wildcards.strain,
             incorporate_snvs=True
@@ -86,7 +86,7 @@ if MODE == "maskfasta":
         conda:
             "../envs/snpsplit.yml"
         log:
-            f"logs/snp_split_{{strain}}.log",
+            f"snp_split_{{strain}}.log",
         params:
             strain=lambda wildcards: wildcards.strain,
             incorporate_snvs=False

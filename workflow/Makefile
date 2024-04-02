@@ -16,7 +16,6 @@ Caroli.snp.tar.gz:
 mm9ToMm10.over.chain.gz:
 	wget https://hgdownload.soe.ucsc.edu/goldenPath/mm9/liftOver/mm9ToMm10.over.chain.gz
 
-
 Caroli.snp: Caroli.snp.tar.gz
 	tar xzf $<
 

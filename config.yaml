@@ -10,12 +10,12 @@ additional_variant_bed_files:
   Mus_caroli: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/input_files/m.caroli/Caroli.snp.mm10.no_indels.no_chr.bed.sorted.gz"
 per_strain_fasta: False
 cellranger_filter_gtf: False
-make_cellranger_reference: False
-mode: "incorporate_snvs"  # set "maskfasta" or "incorporate_snvs"
+make_cellranger_reference: True
+mode: "maskfasta"  # set "maskfasta" or "incorporate_snvs"
 # maskfasta for allStrains = one masked reference genome -> scRNAseq data
 # incorporate_snvs for four species-specific SNP-injected genomes -> MethylSeq data
 
-output_directory: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/incorporate_snvs/reference_snvs"
+output_directory: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/maskfasta/reference_snvs"
 output_directory_mcaroli: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/mcaroli_files"
 cellranger_accepted_gene_transcript_types:
   - "protein_coding"
