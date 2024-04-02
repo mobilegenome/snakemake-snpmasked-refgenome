@@ -5,8 +5,6 @@ FASTA_CAROLI_NOINDELS = Caroli.snp.no_indels.fa
 
 all: Caroli.snp.mm10.bed Caroli.snp.mm10.unmapped.bed $(FASTA_CAROLI) $(FASTA_CAROLI_NOINDELS) Caroli.snp.tar.gz mm9ToMm10.over.chain.gz Caroli.snp.mm10.no_indels.no_chr.bed.sorted.gz Caroli.snp.mm10.no_indels.no_chr.bed
 
-#all: Caroli.snp.tar.gz
-
 #download: Caroli.snp.tar.gz mm9ToMm10.over.chain.gz
 #	wget ftp://ftp.ebi.ac.uk/pub/databases/vertebrategenomics/FOG09/snp/Caroli.snp.tar.gz
 #	wget https://hgdownload.soe.ucsc.edu/goldenPath/mm9/liftOver/mm9ToMm10.over.chain.gz
@@ -43,6 +41,7 @@ $(FASTA_CAROLI_NOINDELS): Caroli.snp.mm10.no_indels.bed
 Caroli.snp.mm10.no_indels.no_chr.bed: Caroli.snp.mm10.no_indels.bed
 	sed 's/^chr\|%$$//g' $< > $@
 
-# sorting the same way as in rule snp_split_create_sorted_bed
+# sorting by chromosome (first column)
+# this corresponds to the previous "Caroli.snp.mm10.no_indels.no_chr.bed.sorted.gz" file, but with start and end -1 of that
 Caroli.snp.mm10.no_indels.no_chr.bed.sorted.gz: Caroli.snp.mm10.no_indels.no_chr.bed
-	sort -V -k2,2 -k3,3  $< | gzip -c > $@
+	sort -V -k1,1 -k2,2 -k3,3  $< | gzip -c > $@
