@@ -3,7 +3,7 @@ FASTA_MM10 = /omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome
 FASTA_CAROLI = Caroli.snp.fa
 FASTA_CAROLI_NOINDELS = Caroli.snp.no_indels.fa
 
-all: Caroli.snp.mm10.bed Caroli.snp.mm10.unmapped.bed $(FASTA_CAROLI) $(FASTA_CAROLI_NOINDELS) Caroli.snp.tar.gz mm9ToMm10.over.chain.gz
+all: Caroli.snp.mm10.bed Caroli.snp.mm10.unmapped.bed $(FASTA_CAROLI) $(FASTA_CAROLI_NOINDELS) Caroli.snp.tar.gz mm9ToMm10.over.chain.gz Caroli.snp.mm10.no_indels.no_chr.bed.sorted.gz Caroli.snp.mm10.no_indels.no_chr.bed
 
 #all: Caroli.snp.tar.gz
 
@@ -39,4 +39,10 @@ $(FASTA_CAROLI_NOINDELS): Caroli.snp.mm10.no_indels.bed
 	module load bedtools;
 	bedtools maskfasta -fi $(FASTA_MM10) -fo $@ -bed $<
 
+# removing chr from first column
+Caroli.snp.mm10.no_indels.no_chr.bed: Caroli.snp.mm10.no_indels.bed
+	sed 's/^chr\|%$$//g' $< > $@
 
+# sorting the same way as in rule snp_split_create_sorted_bed
+Caroli.snp.mm10.no_indels.no_chr.bed.sorted.gz: Caroli.snp.mm10.no_indels.no_chr.bed
+	sort -V -k2,2 -k3,3  $< | gzip -c > $@

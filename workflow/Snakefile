@@ -31,7 +31,9 @@ def get_target_files(output_dir):
                                 OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.unmapped.bed",
                                 OUTPUT_DIR_MCAROLI + "/Caroli.snp.no_indels.fa",
                                 OUTPUT_DIR_MCAROLI + "/Caroli.snp.tar.gz",
-                                OUTPUT_DIR_MCAROLI + "/mm9ToMm10.over.chain.gz"]
+                                OUTPUT_DIR_MCAROLI + "/mm9ToMm10.over.chain.gz",
+                                OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.no_indels.no_chr.bed",
+                                OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.no_indels.no_chr.bed.sorted.gz"]
 
     target_files["snp_split_targets"] = [
         "{outdir}/SNPsplit/{strain}/all_SNPs_{strain}_GRCm38.txt.gz".format(
@@ -98,7 +100,7 @@ rule copy_makefile:
     input:
         copy_from = "workflow/Makefile",
     output:
-        copy_to = "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/test_make/Makefile"
+        copy_to = OUTPUT_DIR_MCAROLI + "/Makefile"
     shell:
         """
         cp {input.copy_from} {output.copy_to}
@@ -116,7 +118,9 @@ rule run_makefile:
         OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.unmapped.bed",
         OUTPUT_DIR_MCAROLI + "/Caroli.snp.no_indels.fa",
         OUTPUT_DIR_MCAROLI + "/Caroli.snp.tar.gz",
-        OUTPUT_DIR_MCAROLI + "/mm9ToMm10.over.chain.gz"
+        OUTPUT_DIR_MCAROLI + "/mm9ToMm10.over.chain.gz",
+        OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.no_indels.no_chr.bed",
+        OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.no_indels.no_chr.bed.sorted.gz"
     conda:
         "envs/makefile_mcaroli.yml"
     params:
