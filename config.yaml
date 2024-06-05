@@ -1,21 +1,23 @@
 executables:
-  cellranger-rna: "/software/cellranger/6.0.0/bin/cellranger mkref"
+  cellranger-rna: "/software/cellranger/6.0.0/bin/cellranger mkref" # shouldn't it also be cellranger 6.1.1?
 genome: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/input_files/cellranger-ref/mm10/refdata-gex-mm10-2020-A/fasta/genome.fa"
 annotation: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/input_files/cellranger-ref/mm10/refdata-gex-mm10-2020-A/genes/genes.gtf"
 mgp_vcf_file: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/input_files/mouse_dbsnp_keane2015/mgp.v5.merged.snps_all.dbSNP142.vcf.gz"
 strains:
   - SPRET_EiJ
   - CAST_EiJ
-additional_variant_bed_files:
-  Mus_caroli: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/input_files/m.caroli/Caroli.snp.mm10.no_indels.no_chr.bed.sorted.gz"
+#additional_variant_bed_files:
+  #Mus_caroli: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/input_files/m.caroli/Caroli.snp.mm10.no_indels.no_chr.bed.sorted.gz"
+  #Mus_caroli: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/test/mcaroli_files/Caroli.snp.mm10.no_indels.no_chr.bed.sorted.gz"
+
 per_strain_fasta: False
 cellranger_filter_gtf: False
-make_cellranger_reference: True
-mode: "maskfasta"  # set "maskfasta" or "incorporate_snvs"
-# maskfasta for allStrains = one masked reference genome -> scRNAseq data
-# incorporate_snvs for four species-specific SNP-injected genomes -> MethylSeq data
+make_cellranger_reference: False
+mode: "make_mcarolifiles"  # set "maskfasta" or "incorporate_snvs" or "make_mcarolifiles" 
+# maskfasta for allStrains = one masked reference genome -> used for scRNAseq data
+# incorporate_snvs for four species-specific SNP-injected genomes -> used for MethylSeq data
 
-output_directory: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/maskfasta/reference_snvs"
+output_directory: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/test/maskfasta/reference_snvs" # change according to mode
 output_directory_mcaroli: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/mcaroli_files"
 cellranger_accepted_gene_transcript_types:
   - "protein_coding"

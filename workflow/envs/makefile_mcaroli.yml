@@ -1,4 +1,4 @@
-name: liftover
+name: makefile_caroli
 channels:
   - conda-forge
   - bioconda
@@ -19,4 +19,3 @@ dependencies:
   - openssl=1.1.1w=hd590300_0
   - ucsc-liftover=447=h954228d_0
   - xz=5.2.6=h166bdaf_0
-prefix: /home/l012t/.conda/envs/liftover

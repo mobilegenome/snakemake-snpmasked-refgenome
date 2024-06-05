@@ -1,6 +1,6 @@
 # SNP-masked refererence genome
 
-Create a reference genome sequence with "injected" SNPs/SNVs from other mouse strains.
+Create a reference genome sequence with "injected" or masked SNPs/SNVs from other mouse strains.
 
 ![Rule graph](rulegraph.png)
 
@@ -23,7 +23,7 @@ On the DKFZ Compute Cluster Cellranger is installed as module and available at:
 
 ## Configuration
 
-The configuration in `workflow/config.yaml` contains:
+The configuration in `config.yaml` contains:
 
 - path to reference genome
 - path to gene annotation
@@ -56,7 +56,7 @@ This matrix gives an overview what to expect and requires modification:
 The workflow can be run by executing:
 
 ```bash
-snakemake -c1 --configfile config.yaml --use-conda
+snakemake -c1 --configfile config.yaml --use-conda --latency-wait 60 --use-envmodules
 ```
 
 To use the LSF job scheduler on the DKFZ cluster run with
@@ -64,6 +64,12 @@ To use the LSF job scheduler on the DKFZ cluster run with
 ```bash
 snakemake --cluster "bsub -n4 -q verylong -R rusage[mem=100GB]" -p -j2 -c4 --configfile config.yaml --use-conda
 ```
+
+First, to generate the CAROLI_EiJ SNP file, use mode = "make_carolifiles"" and set all conditions to False. 
+This will run only `workflow/Makefile` and is required for all further steps.
+
+For generating the N-masked genome, set mode = "maskfasta". This includes generating SPRET_EiJ and CAST_EiJ SNP files.
+For generating four SNP-injected genomes, set mode = "incorporate_snvs". This includes generating SPRET_EiJ and CAST_EiJ SNP files.
 
 ## Output files
 

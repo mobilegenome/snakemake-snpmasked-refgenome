@@ -10,37 +10,50 @@ STRAINS = config["strains"]
 MODE = config["mode"]
 OUTPUT_DIR=config["output_directory"]
 OUTPUT_DIR_MCAROLI=config["output_directory_mcaroli"]
+MGP_VCF_FILE = config["mgp_vcf_file"]
+
+# set conditions
 PER_STRAIN_FASTA = config["per_strain_fasta"]
 MAKE_CELLRANGER_REFERENCE = config["make_cellranger_reference"]
-MGP_VCF_FILE = config["mgp_vcf_file"]
+CELLRANGER_FILER_GTF = config["cellranger_filter_gtf"]
+
+print(PER_STRAIN_FASTA)
+print(MAKE_CELLRANGER_REFERENCE)
+print(CELLRANGER_FILER_GTF)
+print(MODE)
 
 
 if MODE == "incorporate_snvs":
     # set PER_STRAIN_FASTA to True if MODE is set to inject SNVs
     PER_STRAIN_FASTA = True
 
+
+# define targets
 def get_target_files(output_dir):
     target_files = {}
 
-    target_files["makefile"] = [OUTPUT_DIR_MCAROLI + "/Makefile",
-                                OUTPUT_DIR_MCAROLI + "/Caroli.snp",
-                                OUTPUT_DIR_MCAROLI + "/Caroli.snp.bed",
-                                OUTPUT_DIR_MCAROLI + "/Caroli.snp.fa",
-                                OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.bed",
-                                OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.no_indels.bed",
-                                OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.unmapped.bed",
-                                OUTPUT_DIR_MCAROLI + "/Caroli.snp.no_indels.fa",
-                                OUTPUT_DIR_MCAROLI + "/Caroli.snp.tar.gz",
-                                OUTPUT_DIR_MCAROLI + "/mm9ToMm10.over.chain.gz",
-                                OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.no_indels.no_chr.bed",
-                                OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.no_indels.no_chr.bed.sorted.gz"]
-
-    target_files["snp_split_targets"] = [
-        "{outdir}/SNPsplit/{strain}/all_SNPs_{strain}_GRCm38.txt.gz".format(
-            outdir=output_dir,
-            strain=strain)
-        for strain in STRAINS
-    ]
+    if MODE == "make_mcarolifiles":
+      target_files["makefile"] = [OUTPUT_DIR_MCAROLI + "/Makefile",
+                                  OUTPUT_DIR_MCAROLI + "/Caroli.snp",
+                                  OUTPUT_DIR_MCAROLI + "/Caroli.snp.bed",
+                                  OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.bed",
+                                  OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.no_indels.bed",
+                                  OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.unmapped.bed",
+                                  #OUTPUT_DIR_MCAROLI + "/Caroli.snp.fa",
+                                  #OUTPUT_DIR_MCAROLI + "/Caroli.snp.no_indels.fa",
+                                  OUTPUT_DIR_MCAROLI + "/Caroli.snp.tar.gz",
+                                  OUTPUT_DIR_MCAROLI + "/mm9ToMm10.over.chain.gz",
+                                  OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.no_indels.no_chr.bed",
+                                  OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.no_indels.no_chr.bed.sorted.gz"]
+ 
+    
+    if MODE != "make_mcarolifiles":
+      target_files["snp_split_targets"] = [
+          "{outdir}/SNPsplit/{strain}/all_SNPs_{strain}_GRCm38.txt.gz".format(
+              outdir=output_dir,
+              strain=strain)
+          for strain in STRAINS
+      ]
 
 
     if MODE == "maskfasta":
@@ -57,6 +70,7 @@ def get_target_files(output_dir):
         for strain in STRAINS
         ]
 
+    
     if PER_STRAIN_FASTA:
         target_files["single_strain_targets"] = \
                 ["{outdir}/{strain}/GRCm38_{mode_label}_{strain}.fa".format(
@@ -78,56 +92,29 @@ localrules:
     strip_chr_prefix_from_fasta,
     add_chr_prefix_to_fasta,
     strip_chr_prefix_from_gtf,
-    create_genome_file
+    create_genome_file,
+    copy_makefile
 
 
 rule all:
     input:
         all_files
 
+# this file is in folder "input_files"
 # rule retrieve_snp_vcf:
 #    #    input: HTTP.remote("ftp.sanger.ac.uk/pub/REL-1505-SNPs_Indels/mgp.v5.merged.snps_all.dbSNP142.vcf.gz", keep_local=True)
 #    output: "data/mgp.v5.merged.snps_all.dbSNP142.vcf.gz"
 #    run:
 # 	print("File is there {output}")
 
-include: "rules/prepare.smk"
-include: "rules/maskfasta.smk"
+
+if MODE == "make_mcarolifiles":
+  include: "rules/make_mcarolifiles.smk"
+  
+if MODE != "make_mcarolifiles":          
+  include: "rules/prepare.smk"
+  include: "rules/maskfasta.smk"
+
 if MAKE_CELLRANGER_REFERENCE:
-    include: "rules/cellranger_mkref.smk"
-
-rule copy_makefile:
-    input:
-        copy_from = "workflow/Makefile",
-    output:
-        copy_to = OUTPUT_DIR_MCAROLI + "/Makefile"
-    shell:
-        """
-        cp {input.copy_from} {output.copy_to}
-        """
-
-rule run_makefile:
-    input:
-        rules.copy_makefile.output
-    output:
-        OUTPUT_DIR_MCAROLI + "/Caroli.snp",
-        OUTPUT_DIR_MCAROLI + "/Caroli.snp.bed",
-        OUTPUT_DIR_MCAROLI + "/Caroli.snp.fa",
-        OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.bed",
-        OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.no_indels.bed",
-        OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.unmapped.bed",
-        OUTPUT_DIR_MCAROLI + "/Caroli.snp.no_indels.fa",
-        OUTPUT_DIR_MCAROLI + "/Caroli.snp.tar.gz",
-        OUTPUT_DIR_MCAROLI + "/mm9ToMm10.over.chain.gz",
-        OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.no_indels.no_chr.bed",
-        OUTPUT_DIR_MCAROLI + "/Caroli.snp.mm10.no_indels.no_chr.bed.sorted.gz"
-    conda:
-        "envs/makefile_mcaroli.yml"
-    params:
-        path = OUTPUT_DIR_MCAROLI
-    shell:
-        """
-        make -C {params.path}
-        """
-
+  include: "rules/cellranger_mkref.smk"
 
