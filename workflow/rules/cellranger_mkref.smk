@@ -3,7 +3,7 @@ from pathlib import Path
 if config["cellranger_filter_gtf"]:
     rule cellranger_rna_extract_version_suffix_from_annotation:
         input:
-            annotation=config["annotation"]
+            annotation=config["annotation"] 
         output:
             f"{OUTPUT_DIR}/reference_assembly/genes.modified.gtf"
         log:
@@ -61,11 +61,11 @@ rule cellranger_rna_mkref_merged:
         directory(f"{OUTPUT_DIR}/merged/GRCm38_masked_allStrains"),
     params:
         mem=300,
-        genome=lambda wildcards, output: Path(output[0]).parts[-1] #"GRCm38_masked_allStrains",
+        genome=lambda wildcards, output: Path(output[0]).parts[-1] #"GRCm38_masked_allStrains", 
     envmodules:
         "cellranger/6.1.1"
     log:
-        "logs/cellranger_rna_mkref_GRCm38_masked_allStrains.log",
+        "cellranger_rna_mkref_GRCm38_masked_allStrains.log",
     script:
         "../scripts/cellranger_mkref.py"
 
@@ -81,7 +81,7 @@ if PER_STRAIN_FASTA:
         params:
             mem=300,
             output_root_dir=lambda wildcards, output: os.path.split(output[0])[0],
-            cellranger_mkref_bin=config["executables"]["cellranger-rna"],
+            cellranger_mkref_bin=config["executables"]["cellranger-rna"], 
             genome=lambda wildcards, input: f"GRCm38_masked_{wildcards.strain}",
         envmodules:
             "cellranger/6.1.1"

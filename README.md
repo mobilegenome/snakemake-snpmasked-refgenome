@@ -7,9 +7,21 @@ Create a reference genome sequence with "injected" or masked SNPs/SNVs from othe
 
 ## Input files
 
-- mouse reference genome
+- mouse reference genome 
 - mouse annotation (GTF)
 - SNP file
+
+### Download links
+
+Download before (to input files):
+
+- ftp.sanger.ac.uk/pub/REL-1505-SNPs_Indels/mgp.v5.merged.snps_all.dbSNP142.vcf.gz
+- https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-mm10-2020-A.tar.gz 
+
+Downloaded automatically:
+
+- ftp://ftp.ebi.ac.uk/pub/databases/vertebrategenomics/FOG09/snp/Caroli.snp.tar.gz (Makefile)
+- https://hgdownload.soe.ucsc.edu/goldenPath/mm9/liftOver/mm9ToMm10.over.chain.gz (Makefile)
 
 ## Dependencies
 
@@ -65,11 +77,17 @@ To use the LSF job scheduler on the DKFZ cluster run with
 snakemake --cluster "bsub -n4 -q verylong -R rusage[mem=100GB]" -p -j2 -c4 --configfile config.yaml --use-conda
 ```
 
+Install and run from environment snkmk_refgenome.yml.
+
 First, to generate the CAROLI_EiJ SNP file, use mode = "make_carolifiles"" and set all conditions to False. 
 This will run only `workflow/Makefile` and is required for all further steps.
 
-For generating the N-masked genome, set mode = "maskfasta". This includes generating SPRET_EiJ and CAST_EiJ SNP files.
-For generating four SNP-injected genomes, set mode = "incorporate_snvs". This includes generating SPRET_EiJ and CAST_EiJ SNP files.
+For generating the N-masked genome, use mode = "maskfasta". 
+This includes generating SPRET_EiJ and CAST_EiJ SNP files and merging all bed files containing SNPs from all three strains. 
+Set make_cellranger_reference to True to enable the last step of generating the reference for downstream scRNAseq alignment.
+
+For generating four SNP-injected genomes, set mode = "incorporate_snvs".
+per_strain_fasta is automatically set to True.
 
 ## Output files
 

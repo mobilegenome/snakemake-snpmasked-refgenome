@@ -3,6 +3,10 @@ import re
 input_gtf = snakemake.input.gtf[0]
 output_gtf = snakemake.output[0]
 
+print(input_gtf)
+print(output_gtf)
+
+
 regex_pattern = snakemake.params.regex_pattern
 repl_pattern = snakemake.params.repl_pattern
 

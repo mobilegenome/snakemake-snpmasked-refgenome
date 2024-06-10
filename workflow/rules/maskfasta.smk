@@ -51,7 +51,7 @@ if MODE == "incorporate_snvs":
             fasta=rules.strip_chr_prefix_from_fasta.output.fasta,
             bed=add_additional_variants(strain),
         output:
-            fasta=f"{OUTPUT_DIR}/{strain}/GRCm38_full_sequence_{strain}.fa"
+            fasta=f"{OUTPUT_DIR}/{strain}/GRCm38_full_sequence_{strain}.fa" 
         message:
             f"Inject snvs for {strain} from BED file"
         conda:
@@ -139,23 +139,24 @@ if MODE == "maskfasta":
             " gzip -c > {output.bed}"
 
 
-    rule intersection:
-        input:
-            bed_files=expand(f"{{output_dir}}/SNPsplit/{{strain}}/all_SNPs_{{strain}}_GRCm38.bed.gz",
-                strain=STRAINS,
-                output_dir=[OUTPUT_DIR]
-            ) +
-            add_additional_variants("Mus_caroli"),
-            genome_file=rules.create_genome_file.output
-        output:
-            OUTPUT_DIR + "/merged/all_SNPs_all_strains_GRCm38.intersect.bed.gz",
-        params:
-            names="CAST SPRET CAROLI"
-        envmodules:
-            "bedtools/2.24.0"
-        shell:
-            "bedtools multiinter -i {input.bed_files} -empty -g {input.genome_file} -names {params.names} | "
-            "gzip -c > {output}"
+    #rule intersection:
+    #    input:
+    #        bed_files=expand(f"{{output_dir}}/SNPsplit/{{strain}}/all_SNPs_{{strain}}_GRCm38.bed.gz",
+    #            strain=STRAINS,
+    #            output_dir=[OUTPUT_DIR]
+    #        ) +
+    #        add_additional_variants("Mus_caroli"),
+    #        genome_file=rules.create_genome_file.output
+    #    output:
+    #        OUTPUT_DIR + "/merged/all_SNPs_all_strains_GRCm38.intersect.bed.gz",
+    #    params:
+    #        names="CAST SPRET CAROLI"
+    #    envmodules:
+    #        "bedtools/2.24.0"
+    #    shell:
+    #        "bedtools multiinter -i {input.bed_files} -empty -g {input.genome_file} -names {params.names} | "
+    #        "gzip -c > {output}"
+
 
     rule maskfasta:
         """Mask coordinates from BED file in FASTA"""

@@ -15,18 +15,18 @@ MGP_VCF_FILE = config["mgp_vcf_file"]
 # set conditions
 PER_STRAIN_FASTA = config["per_strain_fasta"]
 MAKE_CELLRANGER_REFERENCE = config["make_cellranger_reference"]
-CELLRANGER_FILER_GTF = config["cellranger_filter_gtf"]
-
-print(PER_STRAIN_FASTA)
-print(MAKE_CELLRANGER_REFERENCE)
-print(CELLRANGER_FILER_GTF)
-print(MODE)
-
+CELLRANGER_FILTER_GTF = config["cellranger_filter_gtf"]
 
 if MODE == "incorporate_snvs":
     # set PER_STRAIN_FASTA to True if MODE is set to inject SNVs
     PER_STRAIN_FASTA = True
 
+print(PER_STRAIN_FASTA)
+print(CELLRANGER_FILTER_GTF)
+print(MAKE_CELLRANGER_REFERENCE)
+print(MODE)
+
+print(STRAINS)
 
 # define targets
 def get_target_files(output_dir):
@@ -59,7 +59,7 @@ def get_target_files(output_dir):
     if MODE == "maskfasta":
         target_files["merged_strain_targets"] = [
             f"{output_dir}/merged/all_SNPs_all_strains_GRCm38.bed.gz",
-            f"{output_dir}/merged/all_SNPs_all_strains_GRCm38.intersect.bed.gz",
+            #f"{output_dir}/merged/all_SNPs_all_strains_GRCm38.intersect.bed.gz", # not required??
             f"{output_dir}/merged/GRCm38_masked_allStrains"
         ]
 

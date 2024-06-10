@@ -39,7 +39,8 @@ Caroli.snp.mm10.no_indels.no_chr.bed: Caroli.snp.mm10.no_indels.bed
 # sorting by chromosome (first column) and start&end (second&third column)
 # input file for downstream steps
 Caroli.snp.mm10.no_indels.no_chr.bed.sorted.gz: Caroli.snp.mm10.no_indels.no_chr.bed
-	sort -V -k1,1 -k2,2 -k3,3  $< | gzip -c > $@
+	sort -V -k2,2 -k3,3  $< | gzip -c > $@
+#	sort -V -k1,1 -k2,2 -k3,3  $< | gzip -c > $@
 	
 	
 	
