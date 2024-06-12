@@ -36,16 +36,14 @@ Caroli.snp.mm10.no_indels.bed: Caroli.snp.mm10.bed
 Caroli.snp.mm10.no_indels.no_chr.bed: Caroli.snp.mm10.no_indels.bed
 	sed 's/^chr\|%$$//g' $< > $@
 
-# sorting by chromosome (first column) and start&end (second&third column)
+# sorting by start&end (second&third column)
 # input file for downstream steps
 Caroli.snp.mm10.no_indels.no_chr.bed.sorted.gz: Caroli.snp.mm10.no_indels.no_chr.bed
 	sort -V -k2,2 -k3,3  $< | gzip -c > $@
-#	sort -V -k1,1 -k2,2 -k3,3  $< | gzip -c > $@
+
 	
-	
-	
-# everything in FASTA_MM10 covered by Caroli.snp.mm10.bed is changed to N
-# this file isn't required 
+
+# this file isn't required currently
 #$(FASTA_CAROLI): Caroli.snp.mm10.bed
 #module load bedtools;
 #bedtools maskfasta -fi $(FASTA_MM10) -fo $@ -bed $<

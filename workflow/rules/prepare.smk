@@ -53,7 +53,7 @@ rule strip_chr_prefix_from_gtf:
         "mkdir -p {output.dir}; "
         "sed '{params.sed_expr}' {input} > {output.gtf}"
 
-"""
+# this rule is not used currently
 rule create_genome_file:
     input:
         fasta=config["genome"]
@@ -68,4 +68,3 @@ rule create_genome_file:
         "samtools faidx {params.input_filename} && "
         "cut -f1,2 {params.input_filename}.fai > {output} && "
         "rm {params.input_filename} "
-"""

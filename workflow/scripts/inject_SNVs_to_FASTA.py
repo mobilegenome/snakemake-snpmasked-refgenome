@@ -22,6 +22,7 @@ logfile = open(snakemake.log[0], "w")
 print(f"Input files: {input_fasta}, {input_bed}", file=logfile)
 print(f"Output file: {output_fasta}", file=logfile)
 
+# this function is not used currently
 def test_inject_snvs():
     test_BED_string = \
         textwrap.dedent("""\chr1   2 3 C       T
@@ -58,8 +59,8 @@ def test_inject_snvs():
     fasta_out = "sequence.fa"
 
     inject_snvs(fasta_in, fasta_out, df_snv)
-
-
+    
+# even though in the make_carolifiles pipeline, Indels have already been removed
 def filter_indels(df_snv):
     """
     For the following data format used for SNV data from
@@ -113,7 +114,7 @@ def inject_snvs(fasta_in: Path,
                                    description="")
         modified_sequences.append(seqr)
 
-        SeqIO.write(modified_sequences, fasta_out, "fasta")
+    SeqIO.write(modified_sequences, fasta_out, "fasta") 
 
 
 snvs = BedTool(input_bed)

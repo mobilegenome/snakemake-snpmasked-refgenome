@@ -12,7 +12,7 @@ OUTPUT_DIR=config["output_directory"]
 OUTPUT_DIR_MCAROLI=config["output_directory_mcaroli"]
 MGP_VCF_FILE = config["mgp_vcf_file"]
 
-# set conditions
+# conditions
 PER_STRAIN_FASTA = config["per_strain_fasta"]
 MAKE_CELLRANGER_REFERENCE = config["make_cellranger_reference"]
 CELLRANGER_FILTER_GTF = config["cellranger_filter_gtf"]
@@ -72,12 +72,14 @@ def get_target_files(output_dir):
 
     
     if PER_STRAIN_FASTA:
+        STRAINS_all = STRAINS + ["Mus_caroli"]
+        print(STRAINS_all)
         target_files["single_strain_targets"] = \
                 ["{outdir}/{strain}/GRCm38_{mode_label}_{strain}.fa".format(
                     outdir=output_dir,
                     mode_label="masked" if MODE == "maskfasta" else "full_sequence",
                     strain=strain)
-                    for strain in STRAINS]
+                    for strain in STRAINS_all]
 
     return target_files.values()
 
@@ -92,7 +94,7 @@ localrules:
     strip_chr_prefix_from_fasta,
     add_chr_prefix_to_fasta,
     strip_chr_prefix_from_gtf,
-    create_genome_file,
+    #create_genome_file,
     copy_makefile
 
 
@@ -100,7 +102,7 @@ rule all:
     input:
         all_files
 
-# this file is in folder "input_files"
+# this file is in folder "data/snp_masked_genome/input_files/mouse_dbsnp_keange2015"
 # rule retrieve_snp_vcf:
 #    #    input: HTTP.remote("ftp.sanger.ac.uk/pub/REL-1505-SNPs_Indels/mgp.v5.merged.snps_all.dbSNP142.vcf.gz", keep_local=True)
 #    output: "data/mgp.v5.merged.snps_all.dbSNP142.vcf.gz"

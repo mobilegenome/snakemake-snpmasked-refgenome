@@ -138,7 +138,7 @@ if MODE == "maskfasta":
             "{params.add_chr} "
             " gzip -c > {output.bed}"
 
-
+    # this rule is not used currently
     #rule intersection:
     #    input:
     #        bed_files=expand(f"{{output_dir}}/SNPsplit/{{strain}}/all_SNPs_{{strain}}_GRCm38.bed.gz",

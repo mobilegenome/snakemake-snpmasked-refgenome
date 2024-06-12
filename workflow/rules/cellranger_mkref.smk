@@ -49,7 +49,6 @@ def cellranger_mkref_get_gtf_input():
     else:
         return config["annotation"]
 
-
 rule cellranger_rna_mkref_merged:
     """Create Cellranger Reference for a unified N-masked genome.
     """
