@@ -53,7 +53,7 @@ rule strip_chr_prefix_from_gtf:
         "mkdir -p {output.dir}; "
         "sed '{params.sed_expr}' {input} > {output.gtf}"
 
-# this rule is not used currently
+# !! this rule is not used currently
 rule create_genome_file:
     input:
         fasta=config["genome"]

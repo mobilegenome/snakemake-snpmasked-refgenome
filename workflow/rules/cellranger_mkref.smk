@@ -3,7 +3,7 @@ from pathlib import Path
 if config["cellranger_filter_gtf"]:
     rule cellranger_rna_extract_version_suffix_from_annotation:
         input:
-            annotation=config["annotation"] 
+            config["annotation"] 
         output:
             f"{OUTPUT_DIR}/reference_assembly/genes.modified.gtf"
         log:
@@ -68,8 +68,14 @@ rule cellranger_rna_mkref_merged:
     script:
         "../scripts/cellranger_mkref.py"
 
+# This rule in mode = "maskfasta" with condition per_strain_fasta = True
+# only generates output for CAST and SPRET, not CARO
+
+# In mode = "incorporate_snvs", output of this rule is not included in targets,
+# so no cellranger reference is generated from the SNV-injected fastas
+# it would also only apply to CAST and SPRET, not CARO
 if PER_STRAIN_FASTA:
-    rule cellranger_rna_mkref:
+    rule cellranger_rna_mkref: 
         input:
             fasta=rules.snp_split_concat.output,
             annotation=rules.strip_chr_prefix_from_gtf.output.gtf,

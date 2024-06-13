@@ -1,6 +1,6 @@
 import re
 
-input_gtf = snakemake.input.gtf[0]
+input_gtf = snakemake.input[0]
 output_gtf = snakemake.output[0]
 
 print(input_gtf)

@@ -11,13 +11,13 @@ additional_variant_bed_files:
   # this is the output of mode "make_mcarolifiles" 
 
 per_strain_fasta: False 
-cellranger_filter_gtf: False 
-make_cellranger_reference: False
-mode: "incorporate_snvs"  # set "maskfasta" or "incorporate_snvs" or "make_mcarolifiles" 
+cellranger_filter_gtf: True 
+make_cellranger_reference: True
+mode: "maskfasta"  # set "maskfasta" or "incorporate_snvs" or "make_mcarolifiles" 
 # maskfasta for allStrains = one masked reference genome -> used for scRNAseq data
 # incorporate_snvs for three species-specific SNP-injected genomes (in total four including the original mm10 BL6 genome) -> used for MethylSeq data
 
-output_directory: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/incorporate_snvs" # change according to mode
+output_directory: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/maskfasta" # change according to mode
 output_directory_mcaroli: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/mcaroli_files"
 
 cellranger_accepted_gene_transcript_types:

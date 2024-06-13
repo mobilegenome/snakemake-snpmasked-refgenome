@@ -72,8 +72,11 @@ def get_target_files(output_dir):
 
     
     if PER_STRAIN_FASTA:
-        STRAINS_all = STRAINS + ["Mus_caroli"]
-        print(STRAINS_all)
+        if MODE == "incorporate_snvs":
+            STRAINS_all = STRAINS + ["Mus_caroli"]
+            print(STRAINS_all)
+        else:
+            STRAINS_all = STRAINS # there is no rule to generate corresponding Mus caroli output in mode "maskfasta"
         target_files["single_strain_targets"] = \
                 ["{outdir}/{strain}/GRCm38_{mode_label}_{strain}.fa".format(
                     outdir=output_dir,

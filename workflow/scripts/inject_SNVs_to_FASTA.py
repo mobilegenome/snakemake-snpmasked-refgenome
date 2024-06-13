@@ -22,7 +22,7 @@ logfile = open(snakemake.log[0], "w")
 print(f"Input files: {input_fasta}, {input_bed}", file=logfile)
 print(f"Output file: {output_fasta}", file=logfile)
 
-# this function is not used currently
+# !! this function is not used currently
 def test_inject_snvs():
     test_BED_string = \
         textwrap.dedent("""\chr1   2 3 C       T
