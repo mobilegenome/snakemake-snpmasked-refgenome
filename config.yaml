@@ -1,5 +1,5 @@
 executables:
-  cellranger-rna: "/software/cellranger/6.0.0/bin/cellranger mkref" 
+  cellranger-rna: "/software/cellranger/6.1.1/bin/cellranger mkref" 
 genome: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/input_files/cellranger-ref/mm10/refdata-gex-mm10-2020-A/fasta/genome.fa"
 annotation: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/input_files/cellranger-ref/mm10/refdata-gex-mm10-2020-A/genes/genes.gtf"
 mgp_vcf_file: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/input_files/mouse_dbsnp_keane2015/mgp.v5.merged.snps_all.dbSNP142.vcf.gz"
@@ -11,7 +11,7 @@ additional_variant_bed_files:
   # this is the output of mode "make_mcarolifiles" 
 
 per_strain_fasta: False 
-cellranger_filter_gtf: True 
+cellranger_filter_gtf: False 
 make_cellranger_reference: True
 mode: "maskfasta"  # set "maskfasta" or "incorporate_snvs" or "make_mcarolifiles" 
 # maskfasta for allStrains = one masked reference genome -> used for scRNAseq data
