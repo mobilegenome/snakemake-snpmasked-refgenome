@@ -3,7 +3,7 @@ from pathlib import Path
 if config["cellranger_filter_gtf"]:
     rule cellranger_rna_extract_version_suffix_from_annotation:
         input:
-            annotation=config["annotation"]
+            config["annotation"] 
         output:
             f"{OUTPUT_DIR}/reference_assembly/genes.modified.gtf"
         log:
@@ -49,7 +49,6 @@ def cellranger_mkref_get_gtf_input():
     else:
         return config["annotation"]
 
-
 rule cellranger_rna_mkref_merged:
     """Create Cellranger Reference for a unified N-masked genome.
     """
@@ -61,7 +60,7 @@ rule cellranger_rna_mkref_merged:
         directory(f"{OUTPUT_DIR}/merged/GRCm38_masked_allStrains"),
     params:
         mem=300,
-        genome=lambda wildcards, output: Path(output[0]).parts[-1] #"GRCm38_masked_allStrains",
+        genome=lambda wildcards, output: Path(output[0]).parts[-1] #"GRCm38_masked_allStrains", 
     envmodules:
         "cellranger/6.1.1"
     log:
@@ -69,8 +68,14 @@ rule cellranger_rna_mkref_merged:
     script:
         "../scripts/cellranger_mkref.py"
 
+# This rule in mode = "maskfasta" with condition per_strain_fasta = True
+# only generates output for CAST and SPRET, not CARO
+
+# In mode = "incorporate_snvs", output of this rule is not included in targets,
+# so no cellranger reference is generated from the SNV-injected fastas
+# it would also only apply to CAST and SPRET, not CARO
 if PER_STRAIN_FASTA:
-    rule cellranger_rna_mkref:
+    rule cellranger_rna_mkref: 
         input:
             fasta=rules.snp_split_concat.output,
             annotation=rules.strip_chr_prefix_from_gtf.output.gtf,
@@ -81,7 +86,7 @@ if PER_STRAIN_FASTA:
         params:
             mem=300,
             output_root_dir=lambda wildcards, output: os.path.split(output[0])[0],
-            cellranger_mkref_bin=config["executables"]["cellranger-rna"],
+            cellranger_mkref_bin=config["executables"]["cellranger-rna"], 
             genome=lambda wildcards, input: f"GRCm38_masked_{wildcards.strain}",
         envmodules:
             "cellranger/6.1.1"

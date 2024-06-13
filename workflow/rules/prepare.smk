@@ -1,9 +1,9 @@
 rule strip_chr_prefix_from_fasta:
     """Remove chr prefix from FASTA
-    
-    This is needed to match the MGP VCF file. 
+
+    This is needed to match the MGP VCF file.
     """
-    input: config.get("genome"),
+    input: config.get("genome"), # mm10 cellranger ref
     output:
         fasta=f"{OUTPUT_DIR}/reference_assembly/genome.fa",
         infofile=f"{OUTPUT_DIR}/reference_assembly/GENOME_INFO",  # SNPsplit reads all FASTA files, hence we need one filename and store info here
@@ -21,7 +21,7 @@ rule strip_chr_prefix_from_fasta:
 
 
 rule add_chr_prefix_to_fasta:
-    input: config.get("genome"),
+    input: config.get("genome"), # mm10 cellranger ref
     output:
         fasta=f"{OUTPUT_DIR}/reference_assembly/genome.fa",
         infofile=f"{OUTPUT_DIR}/reference_assembly/GENOME_INFO",  # SNPsplit reads all FASTA files, hence we need one filename and store info here
@@ -53,6 +53,7 @@ rule strip_chr_prefix_from_gtf:
         "mkdir -p {output.dir}; "
         "sed '{params.sed_expr}' {input} > {output.gtf}"
 
+# !! this rule is not used currently
 rule create_genome_file:
     input:
         fasta=config["genome"]

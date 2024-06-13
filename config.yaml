@@ -1,30 +1,40 @@
 executables:
-  cellranger-rna: "/software/cellranger/6.0.0/bin/cellranger mkref"
-genome: "/omics/groups/OE0538/internal/users/f844s/cellranger-ref/mm10/refdata-gex-mm10-2020-A/fasta/genome.fa"
-annotation: "/omics/groups/OE0538/internal/users/f844s/cellranger-ref/mm10/refdata-gex-mm10-2020-A/genes/genes.gtf"
+  cellranger-rna: "/software/cellranger/6.1.1/bin/cellranger mkref" 
+genome: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/input_files/cellranger-ref/mm10/refdata-gex-mm10-2020-A/fasta/genome.fa"
+annotation: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/input_files/cellranger-ref/mm10/refdata-gex-mm10-2020-A/genes/genes.gtf"
+mgp_vcf_file: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/input_files/mouse_dbsnp_keane2015/mgp.v5.merged.snps_all.dbSNP142.vcf.gz"
 strains:
   - SPRET_EiJ
   - CAST_EiJ
 additional_variant_bed_files:
-  Mus_caroli: "/omics/groups/OE0538/internal/users/f844s/2022-bonemarrow/data/m.caroli/Caroli.snp.mm10.no_indels.no_chr.bed.sorted.gz"
-per_strain_fasta: False
-cellranger_filter_gtf: False
-output_directory: "results/masked_reference"
+  Mus_caroli: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/mcaroli_files/Caroli.snp.mm10.no_indels.no_chr.bed.sorted.gz"
+  # this is the output of mode "make_mcarolifiles" 
+
+per_strain_fasta: False 
+cellranger_filter_gtf: False 
+make_cellranger_reference: True
+mode: "maskfasta"  # set "maskfasta" or "incorporate_snvs" or "make_mcarolifiles" 
+# maskfasta for allStrains = one masked reference genome -> used for scRNAseq data
+# incorporate_snvs for three species-specific SNP-injected genomes (in total four including the original mm10 BL6 genome) -> used for MethylSeq data
+
+output_directory: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/maskfasta" # change according to mode
+output_directory_mcaroli: "/omics/odcf/analysis/OE0538_projects/DO-0008/data/snp_masked_genome/mcaroli_files"
+
 cellranger_accepted_gene_transcript_types:
-  - "protein_coding" 
-  - "lncRNA" 
-  - "antisense" 
-  - "IG_C_gene" 
-  - "IG_D_gene" 
-  - "IG_J_gene" 
-  - "IG_LV_gene" 
-  - "IG_V_gene" 
-  - "IG_V_pseudogene" 
-  - "IG_J_pseudogene" 
-  - "IG_C_pseudogene" 
-  - "TR_C_gene" 
-  - "TR_D_gene" 
-  - "TR_J_gene" 
-  - "TR_V_gene" 
-  - "TR_V_pseudogene" 
+  - "protein_coding"
+  - "lncRNA"
+  - "antisense"
+  - "IG_C_gene"
+  - "IG_D_gene"
+  - "IG_J_gene"
+  - "IG_LV_gene"
+  - "IG_V_gene"
+  - "IG_V_pseudogene"
+  - "IG_J_pseudogene"
+  - "IG_C_pseudogene"
+  - "TR_C_gene"
+  - "TR_D_gene"
+  - "TR_J_gene"
+  - "TR_V_gene"
+  - "TR_V_pseudogene"
   - "TR_J_pseudogene"
